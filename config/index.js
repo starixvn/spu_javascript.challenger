@@ -17,4 +17,9 @@ module.exports = {
     JWT_ID: process.env['JWT_ID'],
     JWT_EXPIRES: process.env['JWT_EXPIRES'],
     SECRET_KEY: process.env['SECRET_KEY'],
+
+    RANDOM_NUM_CHALLENGES: process.env['RANDOM_NUM_CHALLENGES'],
+    RANDOM_LENGTH_STRING: process.env['RANDOM_LENGTH_STRING'],
+    MIN: process.env['MIN'],
+    MAX: process.env['MAX']
 }

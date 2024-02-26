@@ -3,7 +3,7 @@ const cors = require('cors');
 const jwt = require('jsonwebtoken');
 const config =  require('../config/index.js');
 const { getAsync, setAsync } = require('./redis.js');
-const { getChallenges } = require('./challenges/index.js');
+const { getChallenges, executeChallenges } = require('./challenges/index.js');
 
 const app = express();
 
@@ -26,10 +26,25 @@ app.get('/api/getToken', async (req, res) => {
 });
 
 app.get('/api/getChallenges', async (req, res) => {
+  const challenges = getChallenges();
   const json = {
     id: req.query.sessionId,
-    challenges: getChallenges()
+    challenges: challenges
   };
+
+  const challengeExpected = executeChallenges(challenges);
+
+  console.log('challengeExpected', challengeExpected);
+
+  if(req.query?.sessionId){
+    await setAsync(`Challenge:${req.query.sessionId}`, challengeExpected , (err, reply) => {
+      if (err) {
+        console.error('Error setting Redis key:', err);
+      } else {
+        console.log('Redis key set successfully:', reply);
+      }
+    });
+  }
 
   res.json(JSON.stringify(json));
 });

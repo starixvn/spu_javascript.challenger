@@ -4,11 +4,7 @@ const { TYPE_FUNCTION } = require('../constants/index.js');
 const { getAllChallenges} = require('./challengeFunc');
 const { getCache, setCache } = require('../node-cache.js');
 const { randomString, randomNumber, randomArray, randomArrayOfObject, randomObject} = require('./random.js');
-
-const RANDOM_NUM_CHALLENGES = 2;
-const RANDOM_LENGTH_STRING = 5;
-const MIN = 1;
-const MAX = 5;
+const config =  require('../../config/index.js');
 
 const getChallenges = () => {
     try{
@@ -30,6 +26,15 @@ const getChallenges = () => {
     }
 };
 
+const executeChallenges = challenges =>{
+    try{
+        const expected = challenges.map(chl => eval(eval(chl)));
+        return expected?.join(',');
+    }catch(err){
+        console.error(err);
+    }
+};
+
 function encodeChallenges(challenges){
     const randomChallenges = getRandomItemsFromArray(challenges);
 
@@ -44,7 +49,7 @@ function encodeChallenges(challenges){
 }
 
 function getRandomItemsFromArray(arr) {
-    const randomIndices = getRandomIndices(arr, RANDOM_NUM_CHALLENGES);
+    const randomIndices = getRandomIndices(arr, config.RANDOM_NUM_CHALLENGES);
     const randomItems = randomIndices.map(index => arr[index]);
     return randomItems;
 }
@@ -98,10 +103,10 @@ function replaceTypeWithRandomVal(type = 'type_s'){
     const {TYPE_STRING, TYPE_NUMBER, TYPE_ARRAY, TYPE_ARRAY_OF_OBJECT, TYPE_OBJECT } = TYPE_FUNCTION;
     switch (type) {
         case TYPE_STRING:
-          val = `'${randomString(RANDOM_LENGTH_STRING)}'`
+          val = `'${randomString(config.RANDOM_LENGTH_STRING)}'`
           break;
         case TYPE_NUMBER:
-          val = randomNumber(MIN, MAX)
+          val = randomNumber(config.MIN, config.MAX)
           break;
         case TYPE_ARRAY:
           val = randomArray()
@@ -121,4 +126,5 @@ function replaceTypeWithRandomVal(type = 'type_s'){
 
 module.exports = {
     getChallenges,
+    executeChallenges
 };

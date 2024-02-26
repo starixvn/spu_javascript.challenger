@@ -1,8 +1,6 @@
-const RANDOM_LENGTH_STRING = 5;
-const MIN = 1;
-const MAX = 5;
+const config =  require('../../config/index.js');
 
-const randomString = (length = RANDOM_LENGTH_STRING) => {
+const randomString = (length = config.RANDOM_LENGTH_STRING) => {
     const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
     let result = '';
   
@@ -14,7 +12,7 @@ const randomString = (length = RANDOM_LENGTH_STRING) => {
     return result;
   }
 
-const randomNumber = (min = MIN, max = MAX) => Math.random() * (max - min) + min;
+const randomNumber = (min = config.MIN, max = config.MAX) => Math.random() * (max - min) + min;
 
 const randomArray = () => `[1, 2, 3, 4]`;
 
