@@ -1,5 +1,5 @@
-const { getChallenges } = require('../challenges/index.js');
-const { getAsync, setAsync } = require('../redis.js');
+const { getChallenges } = require('../src/challenges/index.js');
+const { getAsync, setAsync } = require('../src/redis.js');
 require('dotenv').config();
 
 const challenges = getChallenges();

@@ -9,7 +9,6 @@ const getCache = (key = keyChallenge) =>{
         if(cache.has(key)){ 
             return cache.get(key);
         }
-    
         return null;
     }catch(err){
         console.error(err)

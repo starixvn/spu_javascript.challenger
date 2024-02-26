@@ -2,7 +2,6 @@ const express = require('express');
 const cors = require('cors');
 const jwt = require('jsonwebtoken');
 const config =  require('../config/index.js');
-
 const { getAsync, setAsync } = require('./redis.js');
 const { getChallenges } = require('./challenges/index.js');
 
@@ -15,7 +14,6 @@ app.use(express.json());
 app.get('/health', (req, res) => {
   res.status(200).send('Ok');
 });
-
 
 app.get('/api/getToken', async (req, res) => {
   const {JWT_ID, SECRET_KEY, JWT_EXPIRES} = config;
