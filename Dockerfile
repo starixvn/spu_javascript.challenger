@@ -1,4 +1,4 @@
-FROM https://hub.nexdev.net/base/node:20.9.0-alpine AS builder
+FROM hub.nexdev.net/base/node:20.9.0-alpine AS builder
 WORKDIR /app
 
 COPY package.json yarn.lock
