@@ -4,13 +4,11 @@ WORKDIR /app
 COPY ./package.json /app/package.json
 COPY ./package-lock.json /app/package-lock.json
 
-RUN npm install
+RUN ls -al
 
-# RUN npm run reg \
-#     && yarn install --production \
-#     && npx mod-pruner prune --force
+RUN npm install --progress
 
 COPY ./src/ .
 
 EXPOSE 5000
-CMD ["npm", "build-pro"]
+CMD ["npm", "run", "build-pro"]
