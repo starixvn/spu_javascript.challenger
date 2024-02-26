@@ -1,4 +1,4 @@
-FROM hub.lumigame.com/docker-hub/library/node:18.1-alpine AS builder
+FROM https://hub.nexdev.net/base/node:20.9.0-alpine AS builder
 WORKDIR /app
 
 COPY package.json yarn.lock
@@ -18,4 +18,4 @@ COPY --from=builder /app .
 ENV TZ="America/La_Paz"
 
 EXPOSE 5000
-CMD ["npm", "pro:js-challenge"]
+CMD ["npm", "build-pro"]
