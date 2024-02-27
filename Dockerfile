@@ -1,5 +1,7 @@
-ARG TRANSFORM_CONFIG
 FROM hub.nexdev.net/base/node:20.9.0-alpine AS builder
+
+ARG TRANSFORM_CONFIG
+
 WORKDIR /app
 
 COPY ./package.json /app/package.json
