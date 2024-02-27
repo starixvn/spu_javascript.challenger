@@ -1,4 +1,4 @@
-const config =  require('../../config/index.js');
+const config =  require('../config/index.js');
 
 const randomString = (length = config.RANDOM_LENGTH_STRING) => {
     const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';

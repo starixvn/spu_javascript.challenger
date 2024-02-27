@@ -1,5 +1,5 @@
 const redis = require('redis');
-const config =  require('../config/index.js');
+const config =  require('./config/index.js');
 
 const redisClient = redis.createClient({
   password: config.REDIS_PASSWORD,

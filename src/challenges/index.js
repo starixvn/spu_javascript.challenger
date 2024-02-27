@@ -4,7 +4,7 @@ const { TYPE_FUNCTION } = require('../constants/index.js');
 const { getAllChallenges} = require('./challengeFunc');
 const { getCache, setCache } = require('../node-cache.js');
 const { randomString, randomNumber, randomArray, randomArrayOfObject, randomObject} = require('./random.js');
-const config =  require('../../config/index.js');
+const config =  require('../config/index.js');
 
 const getChallenges = () => {
     try{

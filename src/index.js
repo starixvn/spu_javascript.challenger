@@ -1,7 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const jwt = require('jsonwebtoken');
-const config =  require('../config/index.js');
+const config =  require('./config/index.js');
 const { getAsync, setAsync } = require('./redis.js');
 const { getChallenges, executeChallenges } = require('./challenges/index.js');
 
