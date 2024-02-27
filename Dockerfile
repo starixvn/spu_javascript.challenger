@@ -4,9 +4,7 @@ WORKDIR /app
 COPY ./package.json /app/package.json
 COPY ./package-lock.json /app/package-lock.json
 
-RUN ls -al
-
-RUN npm install --progress
+RUN npm install
 
 COPY ./src/ .
 

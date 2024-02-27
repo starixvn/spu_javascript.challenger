@@ -12,7 +12,7 @@ app.use(cors())
 app.use(express.json());
 
 app.get('/healthz', (req, res) => {
-  res.status(200).send('Ok');
+  res.status(200).send(config.NODE_ENV);
 });
 
 app.get('/api/getToken', async (req, res) => {
