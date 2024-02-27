@@ -1,9 +1,6 @@
 const dotenv = require('dotenv');
 const path = require('path');
 
-console.log('__dirname', __dirname);
-console.log('NODE_ENV', process.env.NODE_ENV.toLowerCase());
-
 dotenv.config({
     path: path.resolve(__dirname, `${process.env.NODE_ENV.toLowerCase()}.env`)
 });

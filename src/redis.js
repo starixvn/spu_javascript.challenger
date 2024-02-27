@@ -20,7 +20,6 @@ redisClient.on('connect', () => {
 
 redisClient.on('error', (err) => {
   console.error('Error connecting to Redis server:', err);
-  redisClient.quit();
 });
 
 async function setAsync(key, value, callback) {
