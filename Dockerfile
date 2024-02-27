@@ -8,8 +8,12 @@ RUN npm install
 
 COPY ./src/ .
 
-RUN if [ "$CONFIG_FILE" = ".LOCAL" ] ; then ENV NODE_ENV local;  \
-else ENV NODE_ENV production;
+ENV NODE_ENV production
+
+ARG DEPLOY_ENV
+RUN if [ "$DEPLOY_ENV" = "LOCAL" ]; then \
+        echo "test deploy $DEPLOY_ENV"; \
+    fi
 
 EXPOSE 5000
-CMD ["npm", "run", "build-pro"]
+CMD ["npm", "run", "build-local"]
