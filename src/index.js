@@ -15,6 +15,10 @@ app.get('/healthz', (req, res) => {
   res.status(200).send(process.env);
 });
 
+app.get('/testSentry', (req, res) => {
+  Sentry.captureException("something went wrong");
+});
+
 app.get('/api/getToken', async (req, res) => {
   const {JWT_ID, SECRET_KEY, JWT_EXPIRES} = config;
   const token = jwt.sign(
