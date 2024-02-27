@@ -10,18 +10,18 @@ const redisClient = redis.createClient({
   database: config.REDIS_DATABASE,
 });
 
-// (async () => { 
-//   await redisClient.connect(); 
-// })(); 
+(async () => { 
+  await redisClient.connect(); 
+})(); 
 
-// redisClient.on('connect', () => {
-//   console.log('Connected to Redis server');
-// });
+redisClient.on('connect', () => {
+  console.log('Connected to Redis server');
+});
 
-// redisClient.on('error', (err) => {
-//   console.error('Error connecting to Redis server:', err);
-//   redisClient.quit();
-// });
+redisClient.on('error', (err) => {
+  console.error('Error connecting to Redis server:', err);
+  redisClient.quit();
+});
 
 async function setAsync(key, value, callback) {
   redisClient.set(key, value, (err, reply) => {
