@@ -4,9 +4,9 @@
   "description": "",
   "main": "src/index.js",
   "scripts": {
-    "build-dev": "set NODE_ENV=development&& node src/index.js",
-    "build-local": "set NODE_ENV=local&& node index.js",
-    "build-pro": "set NODE_ENV=production&& node index.js"
+    "build-dev": "export NODE_ENV=development&&node src/index.js",
+    "build-local": "export NODE_ENV=local&&node index.js",
+    "build-pro": "export NODE_ENV=production&&node index.js"
   },
   "author": "",
   "license": "ISC",

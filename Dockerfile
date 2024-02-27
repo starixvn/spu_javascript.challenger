@@ -8,7 +8,7 @@ RUN npm install
 
 COPY ./src/ .
 
-ENV NODE_ENV production
+#ENV NODE_ENV production
 
 EXPOSE 5000
 CMD ["npm", "run", "build-pro"]
