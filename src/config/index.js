@@ -7,12 +7,12 @@ dotenv.config({
 
 module.exports = {
     NODE_ENV : process.env['NODE_ENV'] || 'development',
-    PORT : process.env['PORT'],
+    PORT : process.env['PORT'] || 5000,
 
-    REDIS_HOST: process.env['REDIS_HOST'],
-    REDIS_PORT: process.env['REDIS_PORT'],
-    REDIS_PASSWORD: process.env['REDIS_PASSWORD'],
-    REDIS_DATABASE: process.env['REDIS_DATABASE'],
+    REDIS_HOST: process.env['REDIS_HOST'] || '10.18.200.131',
+    REDIS_PORT: process.env['REDIS_PORT'] || 16379,
+    REDIS_PASSWORD: process.env['REDIS_PASSWORD'] || 'foo1@bared',
+    REDIS_DATABASE: process.env['REDIS_DATABASE'] || 14,
 
     JWT_ID: process.env['JWT_ID'],
     JWT_EXPIRES: process.env['JWT_EXPIRES'],
