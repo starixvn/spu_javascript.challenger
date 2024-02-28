@@ -10,13 +10,15 @@ const { verifyTokenMiddleware } = require('./middleware/jwtTokenMiddleware.js');
 
 const app = express();
 
-app.use((req, res, next) => {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Credentials','true');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Amz-Version-Id');
-  next();
-});
+// app.use((req, res, next) => {
+//   res.setHeader('Access-Control-Allow-Origin', '*');
+//   res.setHeader('Access-Control-Allow-Credentials','true');
+//   res.setHeader('Access-Control-Allow-Methods', 'GET, POST');
+//   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Amz-Version-Id');
+//   next();
+// });
+
+app.use(cors());
 
 // app.use(cors({
 //   allowedHeaders: ['Content-Type', 'Authorization', 'x-amz-version-id']
