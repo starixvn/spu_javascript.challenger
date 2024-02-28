@@ -45,38 +45,33 @@ app.get('/api/getToken', asyncHandler(async (req, res) => {
 }));
 
 app.get('/api/getChallenges', asyncHandler(async (req, res) => {
-  console.log('getChallenges', req.query.sessionId);
-  console.log(req.headers['x-amz-version-id']);
-  const cookies = parseCookies(req);
-  console.log('cookies', cookies)
-
-  const challenges = getChallenges();
-  const json = {
-    id: req.query.sessionId,
-    challenges: challenges
-  };
-
-  const challengeExpected = executeChallenges(challenges);
-
-  console.log('challengeExpected', challengeExpected);
-
-  if(req.query?.sessionId){
-    await setAsync(`Challenge:${req.query.sessionId}`, challengeExpected , (err, reply) => {
+  const cookies = parseCookies(req.headers['x-ck-fp']);
+  console.log('cookies', cookies);
+  if(cookies['gfp']){
+    const challenges = getChallenges();
+  
+    const challengeExpected = executeChallenges(challenges);
+  
+    console.log('challengeExpected', challengeExpected);
+  
+    await setAsync(`Challenge:${cookies['gfp']}`, challengeExpected , (err, reply) => {
       if (err) {
         captureException(err);
       } else {
         console.log('Redis key set successfully:', reply);
       }
     });
+  
+    res.json(JSON.stringify(challenges));
   }
-
-  res.json(JSON.stringify(json));
 }));
 
 app.post('/api/verify', verifyTokenMiddleware, asyncHandler(async (req, res) => {
-  const requestData = req.body;
-  const expect = await getAsync(`Challenge:${requestData.id}`);
-  const message = expect === requestData.result ? 'verified' : 'bot detect';
+  const cookies = parseCookies(req.headers['x-ck-fp']);
+  const challengeId = cookies['gfp'];
+  const requestData = req.headers['x-exe-rs'];
+  const expect = await getAsync(`Challenge:${challengeId}`);
+  const message = expect === requestData ? 'verified' : 'bot detect';
   res.json({ message: message});
 }));
 
@@ -86,8 +81,7 @@ app.listen(config.PORT, () => {
   console.log(`Server is running on http://localhost:${config.PORT}`);
 });
 
-const parseCookies = req => {
-  const cookieHeader = req.headers.cookie;
+const parseCookies = cookieHeader => {
   const cookies = {};
 
   if (cookieHeader) {
