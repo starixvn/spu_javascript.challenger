@@ -12,10 +12,15 @@ const app = express();
 
 app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  res.setHeader('Access-Control-Allow-Credentials','true');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Amz-Version-Id');
   next();
 });
+
+// app.use(cors({
+//   allowedHeaders: ['Content-Type', 'Authorization', 'x-amz-version-id']
+// }));
 
 app.use(express.json());
 
@@ -38,6 +43,11 @@ app.get('/api/getToken', asyncHandler(async (req, res) => {
 }));
 
 app.get('/api/getChallenges', asyncHandler(async (req, res) => {
+  console.log('getChallenges', req.query.sessionId);
+  console.log(req.headers['x-amz-version-id']);
+  const cookies = parseCookies(req);
+  console.log('cookies', cookies)
+
   const challenges = getChallenges();
   const json = {
     id: req.query.sessionId,
@@ -73,3 +83,19 @@ app.use(errorHandler)
 app.listen(config.PORT, () => {
   console.log(`Server is running on http://localhost:${config.PORT}`);
 });
+
+const parseCookies = req => {
+  const cookieHeader = req.headers.cookie;
+  const cookies = {};
+
+  if (cookieHeader) {
+    cookieHeader.split(';').forEach((cookie) => {
+      const parts = cookie.split('=');
+      const name = parts[0].trim();
+      const value = parts[1].trim();
+      cookies[name] = value;
+    });
+  }
+
+  return cookies;
+}
