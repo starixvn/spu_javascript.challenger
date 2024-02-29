@@ -1,8 +1,9 @@
 const express = require('express');
 const cors = require('cors');
 const config =  require('./config/index.js');
-const { getAsync, setAsync } = require('./redis.js');
+const { getAsync, setAsync, existAsync } = require('./redis.js');
 const jwt = require('jsonwebtoken');
+const {getScript} = require ('./script.js');
 
 const { getChallenges, executeChallenges } = require('./challenges/index.js');
 const { errorHandler, asyncHandler } = require('./middleware/errorHandlingMiddleware.js');
@@ -15,40 +16,45 @@ app.use(cors());
 app.use(express.json());
 
 app.get('/healthz', (req, res) => {
-  res.status(200).send(process.env);
+  res.status(200).send(`env: ${JSON.stringify(process.env)} Date Time: ${new Date().getTime()}`);
 });
 
 app.get('/testSentry', asyncHandler(async (req, res, next) => {
   throw new Error('testSentry');
 }));
 
-app.get('/api/getToken', asyncHandler(async (req, res) => {
-  const {JWT_ID, SECRET_KEY, JWT_EXPIRES} = config;
-  const token = jwt.sign(
-    { id: JWT_ID },
-      SECRET_KEY,
-    { expiresIn: JWT_EXPIRES });
 
-  res.json(token);
-}));
+app.get('/f/p/orchestrate_chl', asyncHandler(async (req, res) => {
+  const sessionKey = req.headers['res-ck-x'];
+  const key = await existAsync(`Challenge:${sessionKey}`);
 
-app.get('/api/getChallenges', asyncHandler(async (req, res) => {
-  if(req.headers['res-ck-x']){
+  let javascriptCode = 'console.log("ok")';
+
+  if(key === 0){
     const challenges = await getChallenges();
+    const challengeEncode = challenges.map(challenge => challenge.encode);
     const challengeExpected = executeChallenges(challenges);
-    const parseJson = JSON.stringify({id: challenges.map(x => x.id).join(','), expected: challengeExpected});
   
-    await setAsync(`Challenge:${req.headers['res-ck-x']}`, parseJson , (err, reply) => {
-      if (err) {
-        captureException(err);
-      }
+    const token = getToken();
+  
+    const parseJson = JSON.stringify({id: challenges.map(x => x.id).join(','), expected: challengeExpected, timeChl: new Date().getTime()});
+  
+    if(sessionKey)
+      await setAsync(`Challenge:${sessionKey}`, parseJson , (err, reply) => {
+        if (err) {
+          captureException(err);
+        }
     });
   
-    res.json(challenges.map(challenge => challenge.encode));
+    const rootUrl = `${req.protocol}://${req.get('host')}`;
+    javascriptCode = getScript(sessionKey, challengeEncode, token, rootUrl);
   }
+  
+  res.setHeader('Content-Type', 'application/javascript');
+  res.send(javascriptCode);
 }));
 
-app.post('/api/verify', verifyTokenMiddleware, asyncHandler(async (req, res) => {
+app.post('/f/p/orchestrate_chl/v', verifyTokenMiddleware, asyncHandler(async (req, res) => {
   const challengeId = req.headers['res-ck-x'];
   const requestData = req.headers['res-fetch-x'];
 
@@ -56,12 +62,15 @@ app.post('/api/verify', verifyTokenMiddleware, asyncHandler(async (req, res) => 
 
   const parseJson = JSON.parse(challenge);
 
+  console.log(parseJson.timeChl);
+
   if(parseJson?.expected){
     const challengeResult = {
       chlId: parseJson.id,
       expect: parseJson.expected,
       actual: requestData,
-      executeTime: req.headers['res-aet-x'] - req.headers['res-bet-x']
+      timeExeChlServer: new Date().getTime() - parseJson.timeChl,
+      timeExeChlClient: req.headers['res-aet-x'] - req.headers['res-bet-x']
     }
   
     await setAsync(`Challenge:${req.headers['res-ck-x']}`, JSON.stringify(challengeResult) , (err, reply) => {
@@ -75,6 +84,16 @@ app.post('/api/verify', verifyTokenMiddleware, asyncHandler(async (req, res) => 
 
   res.send('OK');
 }));
+
+const getToken = () =>{
+  const {JWT_ID, SECRET_KEY, JWT_EXPIRES} = config;
+  const token = jwt.sign(
+    { id: JWT_ID },
+      SECRET_KEY,
+    { expiresIn: JWT_EXPIRES });
+
+  return token;
+}
 
 
 app.use(errorHandler)

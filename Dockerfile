@@ -13,6 +13,8 @@ ENV NODE_ENV $TRANSFORM_CONFIG
 
 COPY ./src/ .
 
+ENV TZ="America/La_Paz"
+
 EXPOSE 5000
 
 CMD ["npm", "run", "build-pro"]

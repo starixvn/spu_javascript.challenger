@@ -36,8 +36,13 @@ async function getAsync(key) {
   return await redisClient.get(key);
 }
 
+async function existAsync(key) {
+  return await redisClient.exists(key);
+}
+
 module.exports = {
   setAsync,
   getAsync,
+  existAsync,
   redisClient
 };
