@@ -2,7 +2,6 @@ const cheerio = require("cheerio");
 const request = require("request-promise");
 
 const loginUrl = "http://localhost:60207/Login/OnPost";
-const targetUrl = "http://localhost:60207";
 
 // Define login data
 const loginData = {

@@ -1,8 +1,13 @@
 const { captureException } = require('../sentry.js');
+const config =  require('../config/index.js');
 
 const errorHandler = (err, req, res, next) =>{
-    captureException(err);
-    res.status(500).json({ error: 'Internal Server Error' });
+    if(config.NODE_ENV === 'development'){
+        res.status(500).json({ error: err.stack });
+    }else{
+        captureException(err);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
 }
 
 const asyncHandler = (fn) => (req, res, next) => {

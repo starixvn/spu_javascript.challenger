@@ -6,21 +6,18 @@ const redisClient = redis.createClient({
   socket: {
     host: config.REDIS_HOST,
     port: config.REDIS_PORT,
+    ssl: false,
+    connectTimeout: 5000,
+    keepAlive: 30000
   },
   database: config.REDIS_DATABASE,
 });
 
 (async () => { 
-  await redisClient.connect(); 
+   await redisClient
+  .on('error', err => console.log('Redis Client Error', err))
+  .connect();
 })(); 
-
-redisClient.on('connect', () => {
-  console.log('Connected to Redis server');
-});
-
-redisClient.on('error', (err) => {
-  console.error('Error connecting to Redis server:', err);
-});
 
 async function setAsync(key, value, callback) {
   redisClient.set(key, value, (err, reply) => {
@@ -31,7 +28,7 @@ async function setAsync(key, value, callback) {
       console.log('Key-value pair set successfully:', reply);
       callback(null, reply);
     }
-    redisClient.quit();
+    redisClient.disconnect();
   });
 }
 

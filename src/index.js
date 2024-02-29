@@ -10,19 +10,7 @@ const { verifyTokenMiddleware } = require('./middleware/jwtTokenMiddleware.js');
 
 const app = express();
 
-// app.use((req, res, next) => {
-//   res.setHeader('Access-Control-Allow-Origin', '*');
-//   res.setHeader('Access-Control-Allow-Credentials','true');
-//   res.setHeader('Access-Control-Allow-Methods', 'GET, POST');
-//   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Amz-Version-Id');
-//   next();
-// });
-
 app.use(cors());
-
-// app.use(cors({
-//   allowedHeaders: ['Content-Type', 'Authorization', 'x-amz-version-id']
-// }));
 
 app.use(express.json());
 
@@ -45,53 +33,52 @@ app.get('/api/getToken', asyncHandler(async (req, res) => {
 }));
 
 app.get('/api/getChallenges', asyncHandler(async (req, res) => {
-  const cookies = parseCookies(req.headers['x-ck-fp']);
-  console.log('cookies', cookies);
-  if(cookies['gfp']){
-    const challenges = getChallenges();
-  
+  if(req.headers['res-ck-x']){
+    const challenges = await getChallenges();
     const challengeExpected = executeChallenges(challenges);
+    const parseJson = JSON.stringify({id: challenges.map(x => x.id).join(','), expected: challengeExpected});
   
-    console.log('challengeExpected', challengeExpected);
+    await setAsync(`Challenge:${req.headers['res-ck-x']}`, parseJson , (err, reply) => {
+      if (err) {
+        captureException(err);
+      }
+    });
   
-    await setAsync(`Challenge:${cookies['gfp']}`, challengeExpected , (err, reply) => {
+    res.json(challenges.map(challenge => challenge.encode));
+  }
+}));
+
+app.post('/api/verify', verifyTokenMiddleware, asyncHandler(async (req, res) => {
+  const challengeId = req.headers['res-ck-x'];
+  const requestData = req.headers['res-fetch-x'];
+
+  const challenge = await getAsync(`Challenge:${challengeId}`);
+
+  const parseJson = JSON.parse(challenge);
+
+  if(parseJson?.expected){
+    const challengeResult = {
+      chlId: parseJson.id,
+      expect: parseJson.expected,
+      actual: requestData,
+      executeTime: req.headers['res-aet-x'] - req.headers['res-bet-x']
+    }
+  
+    await setAsync(`Challenge:${req.headers['res-ck-x']}`, JSON.stringify(challengeResult) , (err, reply) => {
       if (err) {
         captureException(err);
       } else {
         console.log('Redis key set successfully:', reply);
       }
     });
-  
-    res.json(JSON.stringify(challenges));
   }
+
+  res.send('OK');
 }));
 
-app.post('/api/verify', verifyTokenMiddleware, asyncHandler(async (req, res) => {
-  const cookies = parseCookies(req.headers['x-ck-fp']);
-  const challengeId = cookies['gfp'];
-  const requestData = req.headers['x-exe-rs'];
-  const expect = await getAsync(`Challenge:${challengeId}`);
-  const message = expect === requestData ? 'verified' : 'bot detect';
-  res.json({ message: message});
-}));
 
 app.use(errorHandler)
 
 app.listen(config.PORT, () => {
   console.log(`Server is running on http://localhost:${config.PORT}`);
 });
-
-const parseCookies = cookieHeader => {
-  const cookies = {};
-
-  if (cookieHeader) {
-    cookieHeader.split(';').forEach((cookie) => {
-      const parts = cookie.split('=');
-      const name = parts[0].trim();
-      const value = parts[1].trim();
-      cookies[name] = value;
-    });
-  }
-
-  return cookies;
-}

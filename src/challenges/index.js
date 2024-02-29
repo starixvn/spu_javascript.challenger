@@ -6,7 +6,7 @@ const { getCache, setCache } = require('../node-cache.js');
 const { randomString, randomNumber, randomArray, randomArrayOfObject, randomObject} = require('./random.js');
 const config =  require('../config/index.js');
 
-const getChallenges = () => {
+const getChallenges = async () => {
     try{
         let challenges = getCache();
 
@@ -15,9 +15,8 @@ const getChallenges = () => {
             return encodeChallenges(challenges);
         } else {
             console.log('no cache challenge');
-            const allChallenges = getAllChallenges();
+            const allChallenges = await getAllChallenges();
             setCache(allChallenges);
-    
             return encodeChallenges(allChallenges);
         }
     }
@@ -28,7 +27,7 @@ const getChallenges = () => {
 
 const executeChallenges = challenges =>{
     try{
-        const expected = challenges.map(chl => eval(eval(chl)));
+        const expected = challenges.map(chl => eval(eval(chl.encode)));
         return expected?.join(',');
     }catch(err){
         console.error(err);
@@ -39,18 +38,27 @@ function encodeChallenges(challenges){
     const randomChallenges = getRandomItemsFromArray(challenges);
 
     return randomChallenges.map(chl =>{
-
-        const replaceFunc = replaceParameterValues(chl.toString());
+        const replaceFunc = replaceParameterValues(chl.item.func);
         console.log('replaceFunc', replaceFunc);
+
         const obfuscatedCode = getObfuscatedCode(replaceFunc);
-        
-        return JSFuck.encode(obfuscatedCode);
+        const encode = JSFuck.encode(obfuscatedCode);
+
+        return {
+            id: chl.index,
+            encode: encode
+        }
     });
 }
 
 function getRandomItemsFromArray(arr) {
     const randomIndices = getRandomIndices(arr, config.RANDOM_NUM_CHALLENGES);
-    const randomItems = randomIndices.map(index => arr[index]);
+    const randomItems = randomIndices.map(index => {
+        return {
+            index: index + 1,
+            item: arr[index]
+        }
+    });
     return randomItems;
 }
 
