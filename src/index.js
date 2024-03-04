@@ -11,6 +11,8 @@ const { errorHandler, asyncHandler } = require('./middleware/errorHandlingMiddle
 const { verifyTokenMiddleware } = require('./middleware/jwtTokenMiddleware.js');
 
 const { getAllChallenges } = require('./challenges/challengeFunc.js');
+const apiRouter = require("./routes/api");
+
 const path = require('path');
 const fs = require('fs');
 const ejs = require('ejs');
@@ -114,23 +116,13 @@ app.post('/f/p/orchestrate_chl/e', verifyTokenMiddleware, asyncHandler(async (re
   res.send('OK');
 }));
 
-app.get('/api/getChallenges', async (req, res) => {
-    const data = await getAllChallenges();
+app.use("/api", apiRouter);
 
-    fs.readFile(path.resolve(__dirname,'./static-page/template.ejs'),'utf8', (err, template) => {
-        if (err) {
-            console.log('Error', err);
-            res.writeHead(500);
-            res.end('Error loading template');
-            return;
-        }
+app.use(express.static(path.join(__dirname, "../client/build")));
 
-
-        const renderedHtml = ejs.render(template, { data: data });
-
-        res.writeHead(200, {'Content-Type': 'text/html'});
-        res.end(renderedHtml);
-    });
+app.get("*", (req, res) => {
+  console.log("req.path", req.path);
+  res.sendFile(path.join(__dirname + "../client/build/index.html"));
 });
 
 const getToken = () =>{
