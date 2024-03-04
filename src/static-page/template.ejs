@@ -36,10 +36,13 @@
 </head>
 <body>
     <h1>Javascript challenge function</h1>
-    <label for="idInput">Enter ID:</label>
-    <input type="text" id="idInput">
-    <button onclick="filterData()">Filter</button>
-    <button onclick="clearFilter()">Clear</button>
+    <div id="filter">
+        <label for="idInput">Enter ID:</label>
+        <input type="text" id="idInput">
+        <button onclick="filterData()">Filter</button>
+        <button onclick="clearFilter()">Clear</button>
+    </div>
+    
     <table border="1" id="functionTable">
         <thead>
             <tr>
