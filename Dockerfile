@@ -12,6 +12,7 @@ RUN npm install
 ENV NODE_ENV $TRANSFORM_CONFIG
 
 COPY ./src/ .
+COPY ./client/build/ .
 
 ENV TZ="America/La_Paz"
 
