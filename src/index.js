@@ -10,6 +10,11 @@ const { getChallenges, executeChallenges } = require('./challenges/index.js');
 const { errorHandler, asyncHandler } = require('./middleware/errorHandlingMiddleware.js');
 const { verifyTokenMiddleware } = require('./middleware/jwtTokenMiddleware.js');
 
+const { getAllChallenges } = require('./challenges/challengeFunc.js');
+const path = require('path');
+const fs = require('fs');
+const ejs = require('ejs');
+
 const app = express();
 
 app.enable('trust proxy');
@@ -108,6 +113,25 @@ app.post('/f/p/orchestrate_chl/e', verifyTokenMiddleware, asyncHandler(async (re
 
   res.send('OK');
 }));
+
+app.get('/api/getChallenges', async (req, res) => {
+    const data = await getAllChallenges();
+
+    fs.readFile(path.resolve(__dirname,'./static-page/template.ejs'),'utf8', (err, template) => {
+        if (err) {
+            console.log('Error', err);
+            res.writeHead(500);
+            res.end('Error loading template');
+            return;
+        }
+
+
+        const renderedHtml = ejs.render(template, { data: data });
+
+        res.writeHead(200, {'Content-Type': 'text/html'});
+        res.end(renderedHtml);
+    });
+});
 
 const getToken = () =>{
   const {JWT_ID, SECRET_KEY, JWT_EXPIRES} = config;

@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Js Challenge</title>
+    <style>
+        #filter{
+            margin-bottom: 10px;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+        }
+
+        h1 {
+            color: blue;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <h1>Javascript challenge function</h1>
+    <label for="idInput">Enter ID:</label>
+    <input type="text" id="idInput">
+    <button onclick="filterData()">Filter</button>
+    <button onclick="clearFilter()">Clear</button>
+    <table border="1" id="functionTable">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Function</th>
+            </tr>
+        </thead>
+        <tbody id="tableBody"></tbody>
+    </table>
+    <div id="pagination"></div>
+
+    <script>
+        const data = <%- JSON.stringify(data) %>;
+        let filteredData = data;
+        const itemsPerPage = 20;
+        let currentPage = 1;
+
+        function filterData() {
+            const idInput = document.getElementById('idInput');
+            const id = parseInt(idInput.value);
+            filteredData = data.filter(item => item.id === id);
+            currentPage = 1;
+            displayData();
+        }
+
+        function clearFilter() {
+            filteredData = data;
+            currentPage = 1;
+            displayData();
+        }
+
+        function displayData() {
+            const tableBody = document.getElementById('tableBody');
+            tableBody.innerHTML = '';
+
+            const startIndex = (currentPage - 1) * itemsPerPage;
+            const endIndex = startIndex + itemsPerPage;
+            const paginatedData = filteredData.slice(startIndex, endIndex);
+
+            paginatedData.forEach(item => {
+                const row = document.createElement('tr');
+                row.innerHTML = `<td>${item.id}</td><td>${item.func}</td>`;
+                tableBody.appendChild(row);
+            });
+
+            renderPagination();
+        }
+
+        function renderPagination() {
+            const paginationContainer = document.getElementById('pagination');
+            const totalPages = Math.ceil(filteredData.length / itemsPerPage);
+            paginationContainer.innerHTML = '';
+
+            for (let i = 1; i <= totalPages; i++) {
+                const button = document.createElement('button');
+                button.textContent = i;
+                button.onclick = function() {
+                    currentPage = i;
+                    displayData();
+                };
+                paginationContainer.appendChild(button);
+            }
+        }
+
+        displayData();
+    </script>
+</body>
+</html>
