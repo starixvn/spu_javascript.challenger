@@ -12,6 +12,8 @@ const { verifyTokenMiddleware } = require('./middleware/jwtTokenMiddleware.js');
 
 const app = express();
 
+app.enable('trust proxy');
+
 app.use(cors());
 
 app.use(express.json());
