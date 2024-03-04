@@ -4,6 +4,7 @@ const config =  require('./config/index.js');
 const { getAsync, setAsync, existAsync } = require('./redis.js');
 const jwt = require('jsonwebtoken');
 const {getScript} = require ('./script.js');
+const { captureException } = require('./sentry.js');
 
 const { getChallenges, executeChallenges } = require('./challenges/index.js');
 const { errorHandler, asyncHandler } = require('./middleware/errorHandlingMiddleware.js');
@@ -25,7 +26,8 @@ app.get('/testSentry', asyncHandler(async (req, res, next) => {
 
 
 app.get('/f/p/orchestrate_chl', asyncHandler(async (req, res) => {
-  const sessionKey = req.headers['res-ck-x'];
+  const sessionKey = req.query?.ssk;
+  console.log(sessionKey);
   const key = await existAsync(`Challenge:${sessionKey}`);
 
   let javascriptCode = 'console.log("ok")';
@@ -56,13 +58,11 @@ app.get('/f/p/orchestrate_chl', asyncHandler(async (req, res) => {
 
 app.post('/f/p/orchestrate_chl/v', verifyTokenMiddleware, asyncHandler(async (req, res) => {
   const challengeId = req.headers['res-ck-x'];
-  const requestData = req.headers['res-fetch-x'];
+  const requestData = req.headers['res-dt-x'];
 
   const challenge = await getAsync(`Challenge:${challengeId}`);
 
   const parseJson = JSON.parse(challenge);
-
-  console.log(parseJson.timeChl);
 
   if(parseJson?.expected){
     const challengeResult = {
@@ -73,7 +73,29 @@ app.post('/f/p/orchestrate_chl/v', verifyTokenMiddleware, asyncHandler(async (re
       timeExeChlClient: req.headers['res-aet-x'] - req.headers['res-bet-x']
     }
   
-    await setAsync(`Challenge:${req.headers['res-ck-x']}`, JSON.stringify(challengeResult) , (err, reply) => {
+    await setAsync(`Challenge:${challengeId}`, JSON.stringify(challengeResult) , (err, reply) => {
+      if (err) {
+        captureException(err);
+      } else {
+        console.log('Redis key set successfully:', reply);
+      }
+    });
+  }
+
+  res.send('OK');
+}));
+
+app.post('/f/p/orchestrate_chl/e', verifyTokenMiddleware, asyncHandler(async (req, res) => {
+  const challengeId = req.headers['res-ck-x'];
+  const message = req.headers['res-msg-x'];
+
+  if(challengeId && message){
+    const challengeResult = {
+      chlId: challengeId,
+      errMsg: message
+    }
+  
+    await setAsync(`Challenge:${challengeId}`, JSON.stringify(challengeResult) , (err, reply) => {
       if (err) {
         captureException(err);
       } else {

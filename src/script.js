@@ -1,18 +1,39 @@
+const { BROWSER_CHALLENGES } = require('./constants/browserChallenge');
+
 const getScript = (sessionKey, challenges, token='', rootUrl) =>{
     return `(async function () {
-        window.navigator.challenges = ${JSON.stringify(challenges)};
-    
-        const beforeExeTime = new Date().getTime();
-    
-        var challengePromises = window.navigator.challenges.map(challenge => executeChallenge(eval(challenge)));
-        const results = await waitAllWithTimeout(challengePromises)
-            .then(results => results)
-            .catch(error => console.error("Error:", error));
-    
-        delete window.navigator.challenges;
-    
-        if (results) {
-            await postAsync('${rootUrl}/f/p/orchestrate_chl/v', results.join(','), '${token}', beforeExeTime);
+        const isValidBrowser = await executeChallengeBrowser();
+        if(isValidBrowser){
+            const challenges = ${JSON.stringify(challenges)};
+
+            const beforeExeTime = new Date().getTime();
+        
+            var challengePromises = challenges.map(challenge => executeChallenge(eval(challenge)));
+            const results = await waitAllWithTimeout(challengePromises)
+                .then(results => results)
+                .catch(error => console.error("Error:", error));
+        
+            if (results) {
+                await postAsync('${rootUrl}/f/p/orchestrate_chl/v', results.join(','), '${token}', beforeExeTime);
+            }
+        }
+        
+
+        async function executeChallengeBrowser() {
+            let isValid = true;
+            try{
+                const invalidBrowser = ${JSON.stringify(BROWSER_CHALLENGES)}.filter(x => eval(x.exec) !== x.expect);
+
+                if(invalidBrowser?.length > 0){
+                    await postErrAsync('${rootUrl}/f/p/orchestrate_chl/e', invalidBrowser.map(x => x.exec).join(','), '${token}');
+                    isValid = false;
+                }
+            }catch(err){
+                await postErrAsync('${rootUrl}/f/p/orchestrate_chl/e', err.message, '${token}');
+                isValid = false;
+            };
+
+            return isValid;
         }
     
         function executeChallenge(challenge) {
@@ -35,21 +56,31 @@ const getScript = (sessionKey, challenges, token='', rootUrl) =>{
         }
         
         
-        async function postAsync(url, data, token, beforeExeTime) {
+        async function postAsync(url, data, token, beforeExeTime=null) {
+            const response = await fetch(url, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    'Authorization': 'Bearer ' + token,
+                    'Res-DT-X': data,
+                    'Res-Ck-X': '${sessionKey}',
+                    'Res-BET-X': beforeExeTime,
+                    'Res-AET-X': new Date().getTime()
+                },
+            });
+        }
+
+        async function postErrAsync(url, message, token) {
             try {
                 const response = await fetch(url, {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
                         'Authorization': 'Bearer ' + token,
-                        'Res-Fetch-X': data,
-                        'Res-Ck-X': '${sessionKey}',
-                        'Res-BET-X': beforeExeTime,
-                        'Res-AET-X': new Date().getTime()
+                        'Res-Msg-X': message,
+                        'Res-Ck-X': '${sessionKey}'
                     },
                 });
-        
-                console.log("Verify!!!");
             } catch (error) {
                 console.error("Error:", error);
             }
