@@ -1,3 +1,15 @@
+FROM hub.nexdev.net/base/node:20.9.0-alpine AS client-builder
+
+WORKDIR /app/client
+
+COPY client/package*.json ./
+
+RUN npm install
+
+COPY client/ .
+
+RUN npm run build
+
 FROM hub.nexdev.net/base/node:20.9.0-alpine AS builder
 
 ARG TRANSFORM_CONFIG
