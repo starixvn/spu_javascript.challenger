@@ -116,13 +116,13 @@ app.post('/f/p/orchestrate_chl/e', verifyTokenMiddleware, asyncHandler(async (re
   res.send('OK');
 }));
 
-app.use("/api", apiRouter);
+// app.use("/api", apiRouter);
 
-app.use(express.static(path.join(__dirname, "../client/build")));
+// app.use(express.static(path.join(__dirname, "../client/build")));
 
-app.get("*", (req, res) => {
-  console.log("req.path", req.path);
-  res.sendFile(path.join(__dirname + "../client/build/index.html"));
+app.get("/testPath", (req, res) => {
+  res.send(path.join(__dirname + "../client/build/index.html"));
+  //res.sendFile(path.join(__dirname + "../client/build/index.html"));
 });
 
 const getToken = () =>{
