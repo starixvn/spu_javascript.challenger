@@ -12,10 +12,21 @@ RUN npm install
 ENV NODE_ENV $TRANSFORM_CONFIG
 
 COPY ./src/ .
-COPY ../client/build/ .
+
+COPY ./src/ ./src/
+
+WORKDIR /app/client
+
+COPY client/package.json client/package-lock.json ./
+
+RUN npm install
+
+COPY ./client/build/ ./client/build/
 
 ENV TZ="America/La_Paz"
 
 EXPOSE 5000
+
+WORKDIR /app/src
 
 CMD ["npm", "run", "build-pro"]
