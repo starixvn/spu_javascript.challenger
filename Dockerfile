@@ -16,6 +16,8 @@ ARG TRANSFORM_CONFIG
 
 WORKDIR /app
 
+COPY --from=client-builder /app/client/build ./client/build
+
 COPY ./package.json /app/package.json
 COPY ./package-lock.json /app/package-lock.json
 
