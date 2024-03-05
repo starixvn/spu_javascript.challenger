@@ -36,7 +36,6 @@ app.get('/testSentry', asyncHandler(async (req, res, next) => {
 
 app.get('/f/p/orchestrate_chl', asyncHandler(async (req, res) => {
   const sessionKey = req.query?.ssk;
-  console.log(sessionKey);
   const key = await existAsync(`Challenge:${sessionKey}`);
 
   let javascriptCode = 'console.log("ok")';
@@ -48,7 +47,7 @@ app.get('/f/p/orchestrate_chl', asyncHandler(async (req, res) => {
   
     const token = getToken();
   
-    const parseJson = JSON.stringify({id: challenges.map(x => x.id).join(','), expected: challengeExpected, timeChl: new Date().getTime()});
+    const parseJson = JSON.stringify({chlId: challenges.map(x => x.id).join(','), expected: challengeExpected, timeChl: new Date().getTime()});
   
     if(sessionKey)
       await setAsync(`Challenge:${sessionKey}`, parseJson , (err, reply) => {
@@ -65,30 +64,31 @@ app.get('/f/p/orchestrate_chl', asyncHandler(async (req, res) => {
   res.send(javascriptCode);
 }));
 
-app.post('/f/p/orchestrate_chl/v', verifyTokenMiddleware, asyncHandler(async (req, res) => {
+app.post('/f/p/orchestrate_chl/v', asyncHandler(async (req, res) => {
   const challengeId = req.headers['res-ck-x'];
   const requestData = req.headers['res-dt-x'];
+  if(challengeId || requestData){
+    const challenge = await getAsync(`Challenge:${challengeId}`);
 
-  const challenge = await getAsync(`Challenge:${challengeId}`);
-
-  const parseJson = JSON.parse(challenge);
-
-  if(parseJson?.expected){
-    const challengeResult = {
-      chlId: parseJson.id,
-      expect: parseJson.expected,
-      actual: requestData,
-      timeExeChlServer: new Date().getTime() - parseJson.timeChl,
-      timeExeChlClient: req.headers['res-aet-x'] - req.headers['res-bet-x']
-    }
+    const parseJson = JSON.parse(challenge);
   
-    await setAsync(`Challenge:${challengeId}`, JSON.stringify(challengeResult) , (err, reply) => {
-      if (err) {
-        captureException(err);
-      } else {
-        console.log('Redis key set successfully:', reply);
+    if(parseJson?.expected){
+      const challengeResult = {
+        chlId: parseJson.chlId,
+        expect: parseJson.expected,
+        actual: requestData,
+        timeExeChlServer: new Date().getTime() - parseJson.timeChl,
+        timeExeChlClient: req.headers['res-aet-x'] - req.headers['res-bet-x']
       }
-    });
+    
+      await setAsync(`Challenge:${challengeId}`, JSON.stringify(challengeResult) , (err, reply) => {
+        if (err) {
+          captureException(err);
+        } else {
+          console.log('Redis key set successfully:', reply);
+        }
+      });
+    }
   }
 
   res.send('OK');
@@ -100,7 +100,6 @@ app.post('/f/p/orchestrate_chl/e', verifyTokenMiddleware, asyncHandler(async (re
 
   if(challengeId && message){
     const challengeResult = {
-      chlId: challengeId,
       errMsg: message
     }
   

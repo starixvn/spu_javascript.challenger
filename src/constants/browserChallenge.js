@@ -2,12 +2,12 @@ module.exports = {
   BROWSER_CHALLENGES: [
     {
       id: 1,
-      exec: `(() => {return !!window.emit})()`,
+      exec: `!!window.emit`,
       expect: false,
     },
     {
       id: 2,
-      exec: `(() => {return !!window.__nightmare})()`,
+      exec: `!!window.__nightmare`,
       expect: false,
     },
     {
