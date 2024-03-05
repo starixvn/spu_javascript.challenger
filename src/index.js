@@ -6,6 +6,14 @@ const jwt = require('jsonwebtoken');
 const {getScript} = require ('./script.js');
 const { captureException } = require('./sentry.js');
 
+
+const { getAllChallenges } = require('./challenges/challengeFunc.js');
+const apiRouter = require("./routes/api");
+
+const path = require('path');
+const fs = require('fs');
+const ejs = require('ejs');
+
 const { getChallenges, executeChallenges } = require('./challenges/index.js');
 const { errorHandler, asyncHandler } = require('./middleware/errorHandlingMiddleware.js');
 const { verifyTokenMiddleware } = require('./middleware/jwtTokenMiddleware.js');
@@ -107,6 +115,15 @@ app.post('/f/p/orchestrate_chl/e', verifyTokenMiddleware, asyncHandler(async (re
 
   res.send('OK');
 }));
+
+app.use("/api", apiRouter);
+
+app.use(express.static(path.join(__dirname, "../client/build")));
+
+app.get("*", (req, res) => {
+  console.log("req.path", req.path);
+  res.sendFile(path.join(__dirname + "../client/build/index.html"));
+});
 
 const getToken = () =>{
   const {JWT_ID, SECRET_KEY, JWT_EXPIRES} = config;
