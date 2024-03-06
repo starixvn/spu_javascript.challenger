@@ -62,7 +62,7 @@ const getScript = (sessionKey, challenges, token='', rootUrl) =>{
                 headers: {
                     "Content-Type": "application/json",
                     'Authorization': 'Bearer ' + token,
-                    'Res-DT-X': data,
+                    'Res-DT-X': btoa(data),
                     'Res-Ck-X': '${sessionKey}',
                     'Res-BET-X': beforeExeTime,
                     'Res-AET-X': new Date().getTime()

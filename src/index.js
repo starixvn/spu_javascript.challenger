@@ -68,11 +68,13 @@ app.post('/f/p/orchestrate_chl/v', asyncHandler(async (req, res) => {
     const challenge = await getAsync(`Challenge:${challengeId}`);
 
     const parseJson = JSON.parse(challenge);
+
+    const expect = btoa(parseJson.expected);
   
     if(parseJson?.expected){
       const challengeResult = {
         chlId: parseJson.chlId,
-        expect: parseJson.expected,
+        expect: expect,
         actual: requestData,
         timeExeChlServer: new Date().getTime() - parseJson.timeChl,
         timeExeChlClient: req.headers['res-aet-x'] - req.headers['res-bet-x']
@@ -87,7 +89,7 @@ app.post('/f/p/orchestrate_chl/v', asyncHandler(async (req, res) => {
       });
     }
 
-    res.send({isBot: parseJson.expected !== requestData});
+    res.status(200).json({ isBot: expect !== requestData });
   }
 
   res.send('OK');
