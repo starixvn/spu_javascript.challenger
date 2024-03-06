@@ -63,7 +63,7 @@ app.get('/f/p/orchestrate_chl', asyncHandler(async (req, res) => {
 app.post('/f/p/orchestrate_chl/v', asyncHandler(async (req, res) => {
   const challengeId = req.headers['res-ck-x'];
   const requestData = req.headers['res-dt-x'];
-  
+
   if(challengeId || requestData){
     const challenge = await getAsync(`Challenge:${challengeId}`);
 
@@ -86,6 +86,8 @@ app.post('/f/p/orchestrate_chl/v', asyncHandler(async (req, res) => {
         }
       });
     }
+
+    res.send({isBot: parseJson.expected !== requestData});
   }
 
   res.send('OK');
