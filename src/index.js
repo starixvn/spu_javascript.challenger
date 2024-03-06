@@ -6,13 +6,8 @@ const jwt = require('jsonwebtoken');
 const {getScript} = require ('./script.js');
 const { captureException } = require('./sentry.js');
 
-
-const { getAllChallenges } = require('./challenges/challengeFunc.js');
 const apiRouter = require("./routes/api");
-
 const path = require('path');
-const fs = require('fs');
-const ejs = require('ejs');
 
 const { getChallenges, executeChallenges } = require('./challenges/index.js');
 const { errorHandler, asyncHandler } = require('./middleware/errorHandlingMiddleware.js');
@@ -68,6 +63,7 @@ app.get('/f/p/orchestrate_chl', asyncHandler(async (req, res) => {
 app.post('/f/p/orchestrate_chl/v', asyncHandler(async (req, res) => {
   const challengeId = req.headers['res-ck-x'];
   const requestData = req.headers['res-dt-x'];
+  
   if(challengeId || requestData){
     const challenge = await getAsync(`Challenge:${challengeId}`);
 
