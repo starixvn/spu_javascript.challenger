@@ -1,25 +1,25 @@
 const express = require('express');
 const cors = require('cors');
+const compression = require('compression');
+const fs = require('fs');
+
 const config =  require('./config/index.js');
 const { getAsync, setAsync, existAsync } = require('./redis.js');
 const jwt = require('jsonwebtoken');
-const {getScript} = require ('./script.js');
 const { captureException } = require('./sentry.js');
 
 const apiRouter = require("./routes/api");
 const path = require('path');
 
-const { getChallenges, executeChallenges } = require('./challenges/index.js');
+const { getChallenges, getBrowserChallenges, executeChallenges } = require('./challenges/index.js');
 const { errorHandler, asyncHandler } = require('./middleware/errorHandlingMiddleware.js');
 const { verifyTokenMiddleware } = require('./middleware/jwtTokenMiddleware.js');
 
 const app = express();
 
 app.enable('trust proxy');
-
 app.use(cors());
-
-app.use(express.json());
+app.use(compression());
 
 app.get('/healthz', (req, res) => {
   res.status(200).send(`env: ${JSON.stringify(process.env)} Date Time: ${new Date().getTime()}`);
@@ -29,6 +29,10 @@ app.get('/testSentry', asyncHandler(async (req, res, next) => {
   throw new Error('testSentry');
 }));
 
+app.get('/test', (req, res) => {
+  const test = JSFuck.encode(JSON.stringify(BROWSER_CHALLENGES));
+  res.status(200).send(test);
+});
 
 app.get('/f/p/orchestrate_chl', asyncHandler(async (req, res) => {
   const sessionKey = req.query?.ssk;
@@ -53,7 +57,15 @@ app.get('/f/p/orchestrate_chl', asyncHandler(async (req, res) => {
     });
   
     const rootUrl = `${req.protocol}://${req.get('host')}`;
-    javascriptCode = getScript(sessionKey, challengeEncode, token, rootUrl);
+    const scriptContent = await fs.readFileSync(path.resolve(__dirname,'./script.js'), 'utf-8');
+
+    javascriptCode = scriptContent
+    .replace(/_sessionKey/g, sessionKey)
+    .replace(/_browserChallenges/g, getBrowserChallenges())
+    .replace(/_challenges/g, JSON.stringify(challengeEncode))
+    .replace(/_token/g, token)
+    .replace(/_rootUrl/g, rootUrl);
+
   }
   
   res.setHeader('Content-Type', 'application/javascript');

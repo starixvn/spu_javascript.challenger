@@ -5,6 +5,7 @@ const { getAllChallenges} = require('./challengeFunc');
 const { getCache, setCache } = require('../node-cache.js');
 const { randomString, randomNumber, randomArray, randomArrayOfObject, randomObject} = require('./random.js');
 const config =  require('../config/index.js');
+const {BROWSER_CHALLENGES} = require('../constants/browserChallenge.js');
 
 const getChallenges = async () => {
     try{
@@ -25,6 +26,19 @@ const getChallenges = async () => {
     }
 };
 
+const getBrowserChallenges = () =>{
+    const browserChallenges = getCache('browser-challenges-key');
+    if(browserChallenges && browserChallenges !== null){
+        console.log('cache browserChallenges');
+        return browserChallenges
+    }else{
+        const encode = JSFuck.encode(JSON.stringify(BROWSER_CHALLENGES));
+        console.log('return browserChallenges');
+        setCache(encode, 'browser-challenges-key')
+        return encode;
+    }
+}
+
 const executeChallenges = challenges =>{
     try{
         const expected = challenges.map(chl => eval(eval(chl.encode)));
@@ -39,7 +53,6 @@ function encodeChallenges(challenges){
 
     return randomChallenges.map(chl =>{
         const replaceFunc = replaceParameterValues(chl.item.func);
-        console.log('replaceFunc', replaceFunc);
 
         const obfuscatedCode = getObfuscatedCode(replaceFunc);
         const encode = JSFuck.encode(obfuscatedCode);
@@ -117,7 +130,7 @@ function replaceTypeWithRandomVal(type = 'type_s'){
           val = randomNumber(config.MIN, config.MAX)
           break;
         case TYPE_ARRAY:
-          val = randomArray()
+          val = `[${randomArray(config.RANDOM_LENGTH_ARRAY, config.MIN, config.MAX)}]`
           break;
         case TYPE_ARRAY_OF_OBJECT:
           val = `${randomArrayOfObject()}`
@@ -134,5 +147,6 @@ function replaceTypeWithRandomVal(type = 'type_s'){
 
 module.exports = {
     getChallenges,
+    getBrowserChallenges,
     executeChallenges
 };

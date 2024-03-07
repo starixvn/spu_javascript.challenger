@@ -14,7 +14,13 @@ const randomString = (length = config.RANDOM_LENGTH_STRING) => {
 
 const randomNumber = (min = config.MIN, max = config.MAX) => Math.random() * (max - min) + min;
 
-const randomArray = () => `[1, 2, 3, 4]`;
+const randomArray = (length, min = config.MIN, max = config.MAX) => {
+  const randomArray = [];
+  for (let i = 0; i < length; i++) {
+      randomArray.push(randomNumber(min, max));
+  }
+  return randomArray;
+};
 
 const randomArrayOfObject = () => `[{name: 'foo', value: ' 123'}]`;
 
