@@ -40,7 +40,7 @@ app.get('/f/p/orchestrate_chl', asyncHandler(async (req, res) => {
 
   let javascriptCode = 'console.log("ok")';
 
-  if(key === 0){
+  if(key === 0 || true){
     const challenges = await getChallenges();
     const challengeEncode = challenges.map(challenge => challenge.encode);
     const challengeExpected = executeChallenges(challenges);

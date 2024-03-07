@@ -1,30 +1,40 @@
-(async function (sessionKey = '_sessionKey', browserChallenges = '_browserChallenges', challenges='_challenges', token='_token', rootUrl='_rootUrl'){
-    const isValidBrowser = await executeChallengeBrowser();
+(function (sessionKey = '_sessionKey', browserChallenges = '_browserChallenges', challenges='_challenges', token='_token', rootUrl='_rootUrl'){
+    const isValidBrowser = executeChallengeBrowser();
     if (isValidBrowser) {
         const beforeExeTime = new Date().getTime();
         const challengesJson = JSON.parse(challenges);
-        var challengePromises = challengesJson.map(challenge => executeChallenge(eval(challenge)));
-        const results = await waitAllWithTimeout(challengePromises)
-            .then(results => results)
-            .catch(error => console.error("Error:", error));
-    
-        if (results) {
-            await postAsync(`${rootUrl}/f/p/orchestrate_chl/v`, results.join(','), token, beforeExeTime);
+        var challengePromises = [];
+        for (var i = 0; i < challengesJson.length; i++) {
+            var challenge = challengesJson[i];
+            challengePromises.push(executeChallenge(eval(challenge)));
         }
+        waitAllWithTimeout(challengePromises)
+            .then(results => {
+                if (results) {
+                    sendXHRWithPromise(`${rootUrl}/f/p/orchestrate_chl/v`, results.join(','), token, beforeExeTime);
+                }
+            })
+            .catch(error => console.error("Error:", error));
     }
 
-    async function executeChallengeBrowser() {
+    function executeChallengeBrowser() {
         let isValid = true;
         try {
             const challenge = eval(browserChallenges);
-            const invalidBrowser = JSON.parse(challenge).filter(x => eval(x.exec) !== x.expect);
+            var invalidBrowser = [];
+            for (var i = 0; i < JSON.parse(challenge).length; i++) {
+                var x = JSON.parse(challenge)[i];
+                var result = typeof x.exec === 'function' ? x.exec() : eval(x.exec);
+                if (result !== x.expect) {
+                    invalidBrowser.push(x);
+                }
+            }
             if (invalidBrowser.length > 0) {
-                await postErrAsync(`${rootUrl}/f/p/orchestrate_chl/e`, invalidBrowser.map(x => x.exec).join(','), token);
+                sendErrXHRWithPromise(`${rootUrl}/f/p/orchestrate_chl/e`, invalidBrowser.map(x => x.exec).join(','), token);
                 isValid = false;
             }
         } catch (err) {
-            await postErrAsync(`${rootUrl}/f/p/orchestrate_chl/e`, err.message, token);
-            console.error(err);
+            sendErrXHRWithPromise(`${rootUrl}/f/p/orchestrate_chl/e`, err.message, token);
             isValid = false;
         }
         return isValid;
@@ -47,35 +57,51 @@
         });
         return Promise.all(promises.map(p => Promise.race([p, timeoutPromise])));
     }
+
+    function sendXHRWithPromise(url, data, token, beforeExeTime=null){
+        return new Promise((resolve, reject) => {
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", url, true);
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4) {
+                    if (xhr.status >= 200 && xhr.status < 300) {
+                        resolve(xhr.responseText);
+                    } else {
+                        reject(new Error(xhr.statusText));
+                    }
+                }
+            };
     
-    async function postAsync(url, data, token, beforeExeTime=null) {
-        await fetch(url, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                'Authorization': 'Bearer ' + token,
-                'Res-DT-X': btoa(data),
-                'Res-Ck-X': sessionKey,
-                'Res-BET-X': beforeExeTime,
-                'Res-AET-X': new Date().getTime()
-            },
+            xhr.setRequestHeader("Content-Type", "application/json");
+            xhr.setRequestHeader('Authorization', 'Bearer ' + token);
+            xhr.setRequestHeader('Res-DT-X', btoa(data));
+            xhr.setRequestHeader('Res-Ck-X', sessionKey);
+            xhr.setRequestHeader('Res-BET-X', beforeExeTime);
+            xhr.setRequestHeader('Res-AET-X', new Date().getTime());
+            xhr.send();
         });
     }
 
-    async function postErrAsync(url, message, token) {
-        try {
-            await fetch(url, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    'Authorization': 'Bearer ' + token,
-                    'Res-Msg-X': message,
-                    'Res-Ck-X': sessionKey
-                },
-            });
-        } catch (error) {
-            console.error("Error:", error);
-        }
+    function sendErrXHRWithPromise(url, message, token){
+        return new Promise((resolve, reject) => {
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", url, true);
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4) {
+                    if (xhr.status >= 200 && xhr.status < 300) {
+                        resolve(xhr.responseText);
+                    } else {
+                        reject(new Error(xhr.statusText));
+                    }
+                }
+            };
+    
+            xhr.setRequestHeader("Content-Type", "application/json");
+            xhr.setRequestHeader('Authorization', 'Bearer ' + token);
+            xhr.setRequestHeader('Res-Msg-X', message);
+            xhr.setRequestHeader('Res-Ck-X', sessionKey);
+            xhr.send();
+        });
     }
 })();
     

@@ -21,6 +21,7 @@
     "jsonwebtoken": "^9.0.2",
     "node-cache": "^5.1.2",
     "redis": "^4.6.12",
-    "request-promise": "^4.2.6"
+    "request-promise": "^4.2.6",
+    "uglify-js": "^3.17.4"
   }
 }
