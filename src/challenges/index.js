@@ -1,25 +1,15 @@
 const JSFuck = require('../components/jsfuck.js').JSFuck;
 const { getObfuscatedCode } = require('../components/jsObfuscator.js');
 const { TYPE_FUNCTION } = require('../constants/index.js');
-const { getAllChallenges} = require('./challengeFunc');
-const { getCache, setCache } = require('../node-cache.js');
+const { getCache } = require('../node-cache.js');
 const { randomString, randomNumber, randomArray, randomArrayOfObject, randomObject} = require('./random.js');
 const config =  require('../config/index.js');
-const {BROWSER_CHALLENGES} = require('../constants/browserChallenge.js');
 
 const getChallenges = async () => {
     try{
         let challenges = getCache();
 
-        if (challenges && challenges !== null) {
-            console.log('cache challenge');
-            return encodeChallenges(challenges);
-        } else {
-            console.log('no cache challenge');
-            const allChallenges = await getAllChallenges();
-            setCache(allChallenges);
-            return encodeChallenges(allChallenges);
-        }
+        return encodeChallenges(challenges);
     }
     catch(err){
         console.log(err);
@@ -27,16 +17,7 @@ const getChallenges = async () => {
 };
 
 const getBrowserChallenges = () =>{
-    const browserChallenges = getCache('browser-challenges-key');
-    if(browserChallenges && browserChallenges !== null){
-        console.log('cache browserChallenges');
-        return browserChallenges
-    }else{
-        const encode = JSFuck.encode(JSON.stringify(BROWSER_CHALLENGES));
-        console.log('return browserChallenges');
-        setCache(encode, 'browser-challenges-key')
-        return encode;
-    }
+    return getCache('browser-challenge-key');
 }
 
 const executeChallenges = challenges =>{

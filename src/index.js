@@ -14,8 +14,12 @@ const path = require('path');
 const { getChallenges, getBrowserChallenges, executeChallenges } = require('./challenges/index.js');
 const { errorHandler, asyncHandler } = require('./middleware/errorHandlingMiddleware.js');
 const { verifyTokenMiddleware } = require('./middleware/jwtTokenMiddleware.js');
+const { setAllCache } = require('./startup.js');
+const { getCache } = require('./node-cache.js');
 
 const app = express();
+
+setAllCache();
 
 app.enable('trust proxy');
 app.use(cors());
@@ -29,10 +33,6 @@ app.get('/testSentry', asyncHandler(async (req, res, next) => {
   throw new Error('testSentry');
 }));
 
-app.get('/test', (req, res) => {
-  const test = JSFuck.encode(JSON.stringify(BROWSER_CHALLENGES));
-  res.status(200).send(test);
-});
 
 app.get('/f/p/orchestrate_chl', asyncHandler(async (req, res) => {
   const sessionKey = req.query?.ssk;
@@ -57,7 +57,7 @@ app.get('/f/p/orchestrate_chl', asyncHandler(async (req, res) => {
     });
   
     const rootUrl = `${req.protocol}://${req.get('host')}`;
-    const scriptContent = await fs.readFileSync(path.resolve(__dirname,'./script.js'), 'utf-8');
+    const scriptContent = getCache('script-key')
 
     javascriptCode = scriptContent
     .replace(/_sessionKey/g, sessionKey)
@@ -65,7 +65,6 @@ app.get('/f/p/orchestrate_chl', asyncHandler(async (req, res) => {
     .replace(/_challenges/g, JSON.stringify(challengeEncode))
     .replace(/_token/g, token)
     .replace(/_rootUrl/g, rootUrl);
-
   }
   
   res.setHeader('Content-Type', 'application/javascript');

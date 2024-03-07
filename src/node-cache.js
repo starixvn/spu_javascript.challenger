@@ -17,9 +17,9 @@ const getCache = (key = keyChallenge) =>{
     
 };
 
-const setCache = (value, key = keyChallenge, ttl = defaultTtl) =>{
+const setCache = (key = keyChallenge, value) =>{
     try{
-        cache.set(key, value, ttl);
+        cache.set(key, value);
     }catch(err){
         console.error(err)
         cache.close();
