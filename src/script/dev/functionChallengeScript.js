@@ -1,9 +1,8 @@
-(function (sessionKey = '_sessionKey', challenges='_challenges', token='_token', rootUrl='_rootUrl'){
-    const beforeExeTime = new Date().getTime();
-    const challengesJson = JSON.parse(challenges);
+(function (sessionKey = '_sessionKey', challenges=_challenges, token='_token', rootUrl='_rootUrl'){
+    var beforeExeTime = new Date().getTime();
     var challengePromises = [];
-    for (var i = 0; i < challengesJson.length; i++) {
-        var challenge = challengesJson[i];
+    for (var i = 0; i < challenges.length; i++) {
+        var challenge = challenges[i];
         challengePromises.push(executeChallenge(eval(challenge)));
     }
     waitAllWithTimeout(challengePromises)
@@ -18,16 +17,18 @@
     function executeChallenge(challenge) {
         return new Promise((resolve, reject) => {
             try {
-                const result = eval(challenge);
+                var result = eval(challenge);
                 resolve(result);
             } catch (error) {
                 resolve(null);
+                console.error("Error ch:", challenge);
+                console.error("Error:", error);
             }
         });
     }
     
     function waitAllWithTimeout(promises) {
-        const timeoutPromise = new Promise((resolve, reject) => {
+        var timeoutPromise = new Promise((resolve, reject) => {
             setTimeout(() => resolve(null), 200);
         });
         return Promise.all(promises.map(p => Promise.race([p, timeoutPromise])));

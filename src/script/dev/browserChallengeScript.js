@@ -1,5 +1,5 @@
 (function (sessionKey = '_sessionKey', browserChallenges = '_browserChallenges',token='_token', rootUrl='_rootUrl'){
-    const isValidBrowser = executeChallengeBrowser();
+    var isValidBrowser = executeChallengeBrowser();
     try{
         if (isValidBrowser) {
            getScriptWithPromise(rootUrl+'/f/p/orchestrate_chl_func').then(scriptContent => {
@@ -12,9 +12,9 @@
     
 
     function executeChallengeBrowser() {
-        let isValid = true;
+        var isValid = true;
         try {
-            const challenge = eval(browserChallenges);
+            var challenge = eval(browserChallenges);
             var invalidBrowser = [];
             for (var i = 0; i < JSON.parse(challenge).length; i++) {
                 var x = JSON.parse(challenge)[i];

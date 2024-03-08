@@ -10,7 +10,7 @@ const { captureException } = require('./sentry.js');
 const apiRouter = require("./routes/api");
 const path = require('path');
 
-const { getChallenges, getBrowserChallenges, executeChallenges } = require('./challenges/index.js');
+const { getChallenges, executeChallenges } = require('./challenges/index.js');
 const { errorHandler, asyncHandler } = require('./middleware/errorHandlingMiddleware.js');
 const { verifyTokenMiddleware } = require('./middleware/jwtTokenMiddleware.js');
 const { setAllCache } = require('./startup.js');
@@ -70,11 +70,11 @@ app.get('/f/p/orchestrate_chl_func', asyncHandler(async (req, res) => {
   });
 
   const rootUrl = `${req.protocol}://${req.get('host')}`;
-  const scriptContent = getCache('func_challenge-key')
+  const scriptContent = getCache('func_challenge-key');
 
   javascriptCode = scriptContent
   .replace(/_sessionKey/g, sessionKey)
-  .replace(/_challenges/g, JSON.stringify(challengeEncode))
+  .replace('_challenges', JSON.stringify(challengeEncode))
   .replace(/_token/g, token)
   .replace(/_rootUrl/g, rootUrl);
   
