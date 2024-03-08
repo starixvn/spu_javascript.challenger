@@ -34,8 +34,8 @@ function encodeChallenges(challenges){
     return randomChallenges.map(chl =>{
         const replaceFunc = replaceParameterValues(chl.item.func);
 
-        const obfuscatedCode = getObfuscatedCode(replaceFunc);
-        const encode = JSFuck.encode(obfuscatedCode);
+        //const obfuscatedCode = getObfuscatedCode(replaceFunc);
+        const encode = JSFuck.encode(replaceFunc);
 
         return {
             id: chl.index,

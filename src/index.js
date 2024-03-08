@@ -56,19 +56,11 @@ app.get('/f/p/orchestrate_chl_func', asyncHandler(async (req, res) => {
   const sessionKey = req.headers['res-ssk-x'];
   const token = req.headers['res-tk-x'];
 
-  const start = new Date().getTime();
-
   const challenges = await getChallenges();
   const challengeEncode = challenges.map(challenge => challenge.encode);
   const challengeExpected = executeChallenges(challenges);
 
   const parseJson = JSON.stringify({chlId: challenges.map(x => x.id).join(','), expected: challengeExpected, timeChl: new Date().getTime()});
-
-
-  const end = new Date().getTime();
-
-  console.log('total', end - start);
-
 
   if(sessionKey)
     setAsync(`Challenge:${sessionKey}`, parseJson , (err, reply) => {
