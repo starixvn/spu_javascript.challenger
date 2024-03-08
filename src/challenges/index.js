@@ -7,8 +7,7 @@ const config =  require('../config/index.js');
 
 const getChallenges = async () => {
     try{
-        let challenges = getCache();
-
+        let challenges = getCache('js-challenge-key');
         return encodeChallenges(challenges);
     }
     catch(err){

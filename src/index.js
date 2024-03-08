@@ -1,7 +1,6 @@
 const express = require('express');
 const cors = require('cors');
 const compression = require('compression');
-const fs = require('fs');
 
 const config =  require('./config/index.js');
 const { getAsync, setAsync, existAsync } = require('./redis.js');
@@ -33,39 +32,59 @@ app.get('/testSentry', asyncHandler(async (req, res, next) => {
   throw new Error('testSentry');
 }));
 
-
-app.get('/f/p/orchestrate_chl', asyncHandler(async (req, res) => {
+app.get('/f/p/orchestrate_chl_br', asyncHandler(async (req, res) => {
   const sessionKey = req.query?.ssk;
   const key = await existAsync(`Challenge:${sessionKey}`);
-
   let javascriptCode = 'console.log("ok")';
 
   if(key === 0 || true){
-    const challenges = await getChallenges();
-    const challengeEncode = challenges.map(challenge => challenge.encode);
-    const challengeExpected = executeChallenges(challenges);
-  
     const token = getToken();
-  
-    const parseJson = JSON.stringify({chlId: challenges.map(x => x.id).join(','), expected: challengeExpected, timeChl: new Date().getTime()});
-  
-    if(sessionKey)
-      await setAsync(`Challenge:${sessionKey}`, parseJson , (err, reply) => {
-        if (err) {
-          captureException(err);
-        }
-    });
-  
     const rootUrl = `${req.protocol}://${req.get('host')}`;
-    const scriptContent = getCache('script-key')
-
+    const scriptContent = getCache('browser-challenge-key')
+  
     javascriptCode = scriptContent
     .replace(/_sessionKey/g, sessionKey)
-    .replace(/_browserChallenges/g, getBrowserChallenges())
-    .replace(/_challenges/g, JSON.stringify(challengeEncode))
     .replace(/_token/g, token)
     .replace(/_rootUrl/g, rootUrl);
   }
+  
+  res.setHeader('Content-Type', 'application/javascript');
+  res.send(javascriptCode);
+}));
+
+app.get('/f/p/orchestrate_chl_func', asyncHandler(async (req, res) => {
+  const sessionKey = req.headers['res-ssk-x'];
+  const token = req.headers['res-tk-x'];
+
+  const start = new Date().getTime();
+
+  const challenges = await getChallenges();
+  const challengeEncode = challenges.map(challenge => challenge.encode);
+  const challengeExpected = executeChallenges(challenges);
+
+  const parseJson = JSON.stringify({chlId: challenges.map(x => x.id).join(','), expected: challengeExpected, timeChl: new Date().getTime()});
+
+
+  const end = new Date().getTime();
+
+  console.log('total', end - start);
+
+
+  if(sessionKey)
+    setAsync(`Challenge:${sessionKey}`, parseJson , (err, reply) => {
+      if (err) {
+        captureException(err);
+      }
+  });
+
+  const rootUrl = `${req.protocol}://${req.get('host')}`;
+  const scriptContent = getCache('func_challenge-key')
+
+  javascriptCode = scriptContent
+  .replace(/_sessionKey/g, sessionKey)
+  .replace(/_challenges/g, JSON.stringify(challengeEncode))
+  .replace(/_token/g, token)
+  .replace(/_rootUrl/g, rootUrl);
   
   res.setHeader('Content-Type', 'application/javascript');
   res.send(javascriptCode);

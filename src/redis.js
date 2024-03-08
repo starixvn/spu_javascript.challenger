@@ -14,9 +14,7 @@ const redisClient = redis.createClient({
 });
 
 (async () => { 
-   await redisClient
-  .on('error', err => console.log('Redis Client Error', err))
-  .connect();
+   await redisClient.connect();
 })(); 
 
 async function setAsync(key, value, callback) {

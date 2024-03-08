@@ -6,8 +6,8 @@ const { BROWSER_CHALLENGES } = require('./constants/browserChallenge.js');
 const JSFuck = require('./components/jsfuck.js').JSFuck;
 
 const setCacheScriptFile = async () =>{
-    const SCRIPT_KEY = 'script-key';
-    const scriptContent = await fs.readFileSync(path.resolve(__dirname,'./script.js'), 'utf-8');
+    const SCRIPT_KEY = 'func_challenge-key';
+    const scriptContent = await fs.readFileSync(path.resolve(__dirname,'./script/functionChallengeScript.js'), 'utf-8');
     setCache(SCRIPT_KEY, scriptContent);
 }
 
@@ -20,8 +20,12 @@ const setCacheChallenges = async () =>{
 
 const setCacheBrowsers = async () =>{
     const BROWSER_KEY = 'browser-challenge-key';
+    const scriptContent = await fs.readFileSync(path.resolve(__dirname,'./script/browserChallengeScript.js'), 'utf-8');
     const encode = JSFuck.encode(JSON.stringify(BROWSER_CHALLENGES));
-    setCache(BROWSER_KEY, encode)
+    const javascriptCode = scriptContent
+    .replace(/_browserChallenges/g, encode);
+
+    setCache(BROWSER_KEY, javascriptCode)
 }
 
 const setAllCache = async () =>{
