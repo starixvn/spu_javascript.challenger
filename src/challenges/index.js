@@ -1,5 +1,4 @@
 const JSFuck = require('../components/jsfuck.js').JSFuck;
-const { getObfuscatedCode } = require('../components/jsObfuscator.js');
 const { TYPE_FUNCTION } = require('../constants/index.js');
 const { getCache } = require('../node-cache.js');
 const { randomString, randomNumber, randomArray, randomArrayOfObject, randomObject} = require('./random.js');
@@ -32,9 +31,8 @@ function encodeChallenges(challenges){
     const randomChallenges = getRandomItemsFromArray(challenges);
 
     return randomChallenges.map(chl =>{
-        const replaceFunc = replaceParameterValues(chl.item.func);
+        const replaceFunc = replaceParameterValues(chl.item.obfuscated);
 
-        //const obfuscatedCode = getObfuscatedCode(replaceFunc);
         const encode = JSFuck.encode(replaceFunc);
 
         return {
@@ -56,9 +54,13 @@ function getRandomItemsFromArray(arr) {
 }
 
 function getRandomIndices(array, count) {
+    let countRandom = count; 
+    if(array.length < count){
+        countRandom = array.length;
+    }
     const indices = new Set(); 
 
-    while (indices.size < count) {
+    while (indices.size < countRandom) {
         const randomIndex = Math.floor(randomNumber(0, array.length));
         indices.add(randomIndex);
     }
@@ -73,7 +75,7 @@ function replaceParameterValues(funcString) {
         funcString = replaceOccurrencesWithIndex(funcString, type);
     })
 
-    return `(${funcString})()`;
+    return funcString;
 }
 
 
@@ -128,5 +130,6 @@ function replaceTypeWithRandomVal(type = 'type_s'){
 module.exports = {
     getChallenges,
     getBrowserChallenges,
-    executeChallenges
+    executeChallenges,
+    replaceParameterValues
 };

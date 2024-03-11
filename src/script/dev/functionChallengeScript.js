@@ -3,7 +3,7 @@
     var challengePromises = [];
     for (var i = 0; i < challenges.length; i++) {
         var challenge = challenges[i];
-        challengePromises.push(executeChallenge(eval(challenge)));
+        challengePromises.push(executeChallenge(challenge));
     }
     waitAllWithTimeout(challengePromises)
         .then(results => {
@@ -17,11 +17,12 @@
     function executeChallenge(challenge) {
         return new Promise((resolve, reject) => {
             try {
-                var result = eval(challenge);
+                var result = eval(eval(challenge.encode));
                 resolve(result);
             } catch (error) {
                 resolve(null);
-                console.error("Error ch:", challenge);
+                console.error("Error encode:", challenge.encode);
+                console.error("Error id:", challenge.id);
                 console.error("Error:", error);
             }
         });
@@ -50,7 +51,7 @@
     
             xhr.setRequestHeader("Content-Type", "application/json");
             xhr.setRequestHeader('Authorization', 'Bearer ' + token);
-            xhr.setRequestHeader('Res-DT-X', btoa(data));
+            xhr.setRequestHeader('Res-DT-X', data);
             xhr.setRequestHeader('Res-Ck-X', sessionKey);
             xhr.setRequestHeader('Res-BET-X', beforeExeTime);
             xhr.setRequestHeader('Res-AET-X', new Date().getTime());

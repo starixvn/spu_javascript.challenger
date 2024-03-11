@@ -40,7 +40,7 @@ app.get('/f/p/orchestrate_chl_br', asyncHandler(async (req, res) => {
   if(key === 0 || true){
     const token = getToken();
     const rootUrl = `${req.protocol}://${req.get('host')}`;
-    const scriptContent = getCache('browser-challenge-key')
+    const scriptContent = getCache('browser-challenge-key');
   
     javascriptCode = scriptContent
     .replace(/_sessionKey/g, sessionKey)
@@ -57,30 +57,52 @@ app.get('/f/p/orchestrate_chl_func', asyncHandler(async (req, res) => {
   const token = req.headers['res-tk-x'];
 
   const challenges = await getChallenges();
-  const challengeEncode = challenges.map(challenge => challenge.encode);
-  const challengeExpected = executeChallenges(challenges);
 
-  const parseJson = JSON.stringify({chlId: challenges.map(x => x.id).join(','), expected: challengeExpected, timeChl: new Date().getTime()});
-
-  if(sessionKey)
-    setAsync(`Challenge:${sessionKey}`, parseJson , (err, reply) => {
-      if (err) {
-        captureException(err);
-      }
-  });
+  const setAsyncTask = sessionKey ? setChallengeTask(sessionKey, challenges) : Promise.resolve(null);
 
   const rootUrl = `${req.protocol}://${req.get('host')}`;
-  const scriptContent = getCache('func_challenge-key');
+  const getScriptContentTask = generateJavascriptCodeTask(sessionKey, challenges, token, rootUrl);
 
-  javascriptCode = scriptContent
-  .replace(/_sessionKey/g, sessionKey)
-  .replace('_challenges', JSON.stringify(challengeEncode))
-  .replace(/_token/g, token)
-  .replace(/_rootUrl/g, rootUrl);
-  
+  const [javascriptCode, _] = await Promise.all([getScriptContentTask, setAsyncTask]);
+
   res.setHeader('Content-Type', 'application/javascript');
   res.send(javascriptCode);
 }));
+
+async function setChallengeTask(sessionKey, challenges){
+  return new Promise((resolve, reject) => {
+      const challengeExpected = executeChallenges(challenges);
+      const parseJson = JSON.stringify({
+          chlId: challenges.map(x => x.id).join(','),
+          expected: challengeExpected,
+          timeChl: new Date().getTime()
+      });
+
+      resolve(
+        setAsync(`Challenge:${sessionKey}`, parseJson, (err, reply) => {
+          if (err) {
+              captureException(err);
+              reject(err);
+          }
+      }));
+  }) 
+}
+
+async function generateJavascriptCodeTask(sessionKey, challenges, token, rootUrl) {
+  return new Promise((resolve, reject) => {
+      const scriptContent = getCache('func_challenge-key');
+      if (scriptContent) {
+          const javascriptCode = scriptContent
+              .replace(/_sessionKey/g, sessionKey)
+              .replace('_challenges', JSON.stringify(challenges))
+              .replace(/_token/g, token)
+              .replace(/_rootUrl/g, rootUrl);
+          resolve(javascriptCode);
+      } else {
+          reject(new Error('Script content not found in cache'));
+      }
+  });
+}
 
 app.post('/f/p/orchestrate_chl/v', asyncHandler(async (req, res) => {
   const challengeId = req.headers['res-ck-x'];
@@ -91,7 +113,7 @@ app.post('/f/p/orchestrate_chl/v', asyncHandler(async (req, res) => {
 
     const parseJson = JSON.parse(challenge);
 
-    const expect = btoa(parseJson.expected);
+    const expect = parseJson.expected;
   
     if(parseJson?.expected){
       const challengeResult = {
@@ -112,9 +134,9 @@ app.post('/f/p/orchestrate_chl/v', asyncHandler(async (req, res) => {
     }
 
     res.status(200).json({ isBot: expect !== requestData });
+  }else{
+    res.send('OK');
   }
-
-  res.send('OK');
 }));
 
 app.post('/f/p/orchestrate_chl/e', verifyTokenMiddleware, asyncHandler(async (req, res) => {
