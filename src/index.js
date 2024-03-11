@@ -113,7 +113,7 @@ app.post('/f/p/orchestrate_chl/v', asyncHandler(async (req, res) => {
 
     const parseJson = JSON.parse(challenge);
 
-    const expect = parseJson.expected;
+    const expect = btoa(parseJson.expected);
   
     if(parseJson?.expected){
       const challengeResult = {

@@ -51,7 +51,7 @@
     
             xhr.setRequestHeader("Content-Type", "application/json");
             xhr.setRequestHeader('Authorization', 'Bearer ' + token);
-            xhr.setRequestHeader('Res-DT-X', data);
+            xhr.setRequestHeader('Res-DT-X', btoa(data));
             xhr.setRequestHeader('Res-Ck-X', sessionKey);
             xhr.setRequestHeader('Res-BET-X', beforeExeTime);
             xhr.setRequestHeader('Res-AET-X', new Date().getTime());
@@ -59,6 +59,3 @@
         });
     }
 })();
-    
-
-
