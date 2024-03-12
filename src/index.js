@@ -23,6 +23,7 @@ setAllCache();
 app.enable('trust proxy');
 app.use(cors());
 app.use(compression());
+app.use(express.json());
 
 app.get('/healthz', (req, res) => {
   res.status(200).send(`env: ${JSON.stringify(process.env)} Date Time: ${new Date().getTime()}`);
@@ -32,25 +33,29 @@ app.get('/testSentry', asyncHandler(async (req, res, next) => {
   throw new Error('testSentry');
 }));
 
-app.get('/f/p/orchestrate_chl_br', asyncHandler(async (req, res) => {
-  const sessionKey = req.query?.ssk;
-  const key = await existAsync(`Challenge:${sessionKey}`);
-  let javascriptCode = 'console.log("ok")';
+function sendScript(req, res, isExternal) {
+  const token = getToken();
+  const rootUrl = `${req.protocol}://${req.get('host')}`;
+  const scriptContent = getCache('browser-challenge-key');
 
-  if(key === 0 || true){
-    const token = getToken();
-    const rootUrl = `${req.protocol}://${req.get('host')}`;
-    const scriptContent = getCache('browser-challenge-key');
-  
-    javascriptCode = scriptContent
-    .replace(/_sessionKey/g, sessionKey)
+  const javascriptCode = scriptContent
+    .replace(/_isExternal/g, isExternal)
     .replace(/_token/g, token)
     .replace(/_rootUrl/g, rootUrl);
-  }
   
   res.setHeader('Content-Type', 'application/javascript');
+  res.setHeader('Cache-Control', 'max-age=31536000');
   res.send(javascriptCode);
+}
+
+app.get('/f/p/i/orchestrate_chl', asyncHandler(async (req, res) => {
+  sendScript(req, res, false);
 }));
+
+app.get('/f/p/e/orchestrate_chl', asyncHandler(async (req, res) => {
+  sendScript(req, res, true);
+}));
+
 
 app.get('/f/p/orchestrate_chl_func', asyncHandler(async (req, res) => {
   const sessionKey = req.headers['res-ssk-x'];
@@ -127,8 +132,6 @@ app.post('/f/p/orchestrate_chl/v', asyncHandler(async (req, res) => {
       await setAsync(`Challenge:${challengeId}`, JSON.stringify(challengeResult) , (err, reply) => {
         if (err) {
           captureException(err);
-        } else {
-          console.log('Redis key set successfully:', reply);
         }
       });
     }
@@ -151,8 +154,6 @@ app.post('/f/p/orchestrate_chl/e', verifyTokenMiddleware, asyncHandler(async (re
     await setAsync(`Challenge:${challengeId}`, JSON.stringify(challengeResult) , (err, reply) => {
       if (err) {
         captureException(err);
-      } else {
-        console.log('Redis key set successfully:', reply);
       }
     });
   }

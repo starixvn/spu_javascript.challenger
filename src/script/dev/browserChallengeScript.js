@@ -1,5 +1,15 @@
-(function (sessionKey = '_sessionKey', browserChallenges = '_browserChallenges',token='_token', rootUrl='_rootUrl'){
+(function (isExternal = _isExternal, browserChallenges = '_browserChallenges',token='_token', rootUrl='_rootUrl'){
     var isValidBrowser = executeChallengeBrowser();
+    var ssk = "";
+    if(!isExternal){
+        var sessionKey = document.getElementById("__fdi").value;
+        if(sessionKey !== undefined && sessionKey.length > 0){
+            ssk = sessionKey.split(':')[0];
+        }
+    }else{
+        ssk = uuid();
+    }
+
     try{
         if (isValidBrowser) {
            getScriptWithPromise(rootUrl+'/f/p/orchestrate_chl_func').then(scriptContent => {
@@ -9,7 +19,6 @@
     }catch(e){
         console.error(e);
     }
-    
 
     function executeChallengeBrowser() {
         var isValid = true;
@@ -51,7 +60,7 @@
             xhr.setRequestHeader("Content-Type", "application/json");
             xhr.setRequestHeader('Authorization', 'Bearer ' + token);
             xhr.setRequestHeader('Res-Msg-X', message);
-            xhr.setRequestHeader('Res-Ck-X', sessionKey);
+            xhr.setRequestHeader('Res-Ck-X', ssk);
             xhr.send();
         });
     }
@@ -71,11 +80,25 @@
             };
             
             xhr.setRequestHeader('Res-TK-X', token);
-            xhr.setRequestHeader('Res-SSK-X', sessionKey);
+            xhr.setRequestHeader('Res-SSK-X', ssk);
 
             xhr.send();
         });
     }
+
+    function uuid() {
+        if (typeof window !== 'undefined' && window !== null && window.crypto) {
+            return ('10000000-1000-4000-8000-100000000000').replace(/[018]/g, c => (
+                c ^ (window.crypto.getRandomValues(new Uint8Array(1))[0] & (15 >> (c / 4)))).toString(16)
+            );
+        }else{
+            return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+                var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+                return v.toString(16);
+            });
+        }
+        
+    };
 })();
     
 
