@@ -80,6 +80,7 @@ async function setChallengeTask(sessionKey, challenges){
       const challengeExpected = executeChallenges(challenges);
       const parseJson = JSON.stringify({
           chlId: challenges.map(x => x.id).join(','),
+          params: challenges.map(x => x.randomVal).join(', '),
           expected: challengeExpected,
           timeChl: new Date().getTime()
       });
@@ -141,6 +142,7 @@ async function handleChallengeVerification(req, res, isExternal) {
   if (!isExternal) {
     const challengeResult = {
       chlId: parseJson.chlId,
+      params: parseJson.params,
       expect: expect,
       actual: actual,
       timeExeChlServer: new Date().getTime() - parseJson.timeChl,

@@ -10,24 +10,13 @@ function App() {
     fetch("/api/users")
       .then(res => res.json())
       .then(json => setUsers(json.users));
-    // Specify how to clean up after this effect:
     return () => {};
-  }, []); // empty 2nd arg - only runs once
+  }, []);
 
   return (
     <div className="App">
       <header className="App-header">
-        <h1>React Node Template</h1>
-        <p>
-          <a
-            className="App-link"
-            href="https://github.com/mattvukas/react-node-template"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            https://github.com/mattvukas/react-node-template
-          </a>
-        </p>
+        <h1>Js Challenge</h1>
         <div className="logo-box">
           <img src={logo} className="App-logo" alt="logo" />
           <img src={nodejsLogo} className="Node-logo" alt="nodejsLogo" />

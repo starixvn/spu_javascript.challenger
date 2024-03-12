@@ -5,13 +5,9 @@ const { randomString, randomNumber, randomArray, randomArrayOfObject, randomObje
 const config =  require('../config/index.js');
 
 const getChallenges = async () => {
-    try{
-        let challenges = getCache('js-challenge-key');
-        return encodeChallenges(challenges);
-    }
-    catch(err){
-        console.log(err);
-    }
+    let challenges = getCache('js-challenge-key');
+    return encodeChallenges(challenges);
+    
 };
 
 const getBrowserChallenges = () =>{
@@ -19,25 +15,23 @@ const getBrowserChallenges = () =>{
 }
 
 const executeChallenges = challenges =>{
-    try{
-        const expected = challenges.map(chl => eval(eval(chl.encode)));
-        return expected?.join(',');
-    }catch(err){
-        console.error(err);
-    }
+    const expected = challenges.map(chl => eval(eval(chl.encode)));
+    return expected?.join(',');
 };
 
 function encodeChallenges(challenges){
     const randomChallenges = getRandomItemsFromArray(challenges);
 
     return randomChallenges.map(chl =>{
-        const replaceFunc = replaceParameterValues(chl.item.obfuscated);
+        const { funcString, randomVal } = replaceParameterValues(chl.item.obfuscated);
 
-        const encode = JSFuck.encode(replaceFunc);
+        const randomValJoin = randomVal.map(random => random).join(':');
+        const encode = JSFuck.encode(funcString);
 
         return {
             id: chl.index,
-            encode: encode
+            encode: encode,
+            randomVal: randomValJoin
         }
     });
 }
@@ -46,7 +40,7 @@ function getRandomItemsFromArray(arr) {
     const randomIndices = getRandomIndices(arr, config.RANDOM_NUM_CHALLENGES);
     const randomItems = randomIndices.map(index => {
         return {
-            index: index + 1,
+            index: arr[index].id,
             item: arr[index]
         }
     });
@@ -71,11 +65,15 @@ function getRandomIndices(array, count) {
 function replaceParameterValues(funcString) {
     const typeMap = ['type_s', 'type_n', 'type_a', 'type_Aoj', 'type_oj'];
 
-    typeMap.forEach(type =>{
-        funcString = replaceOccurrencesWithIndex(funcString, type);
-    })
+    let randomVal = [];
 
-    return funcString;
+    typeMap.forEach(type =>{
+        const {replacedString, randomArr} = replaceOccurrencesWithIndex(funcString, type);
+        randomVal.push(...randomArr)
+        funcString = replacedString;
+    });
+
+    return { funcString, randomVal };
 }
 
 
@@ -84,13 +82,19 @@ function replaceOccurrencesWithIndex(inputString, searchString) {
     let currentIndex = 1;
     let lastIndex = 0;
 
+    const randomArr = [];
+
     while (true) {
         const index = inputString.indexOf(searchString, lastIndex);
         if (index === -1) break;
 
         replacedString += inputString.substring(lastIndex, index);
 
-        replacedString += replaceTypeWithRandomVal(searchString);
+        const randomVal = replaceTypeWithRandomVal(searchString);
+
+        randomArr.push(randomVal);
+
+        replacedString += randomVal;
 
         currentIndex++;
         lastIndex = index + searchString.length;
@@ -98,7 +102,7 @@ function replaceOccurrencesWithIndex(inputString, searchString) {
 
     replacedString += inputString.substring(lastIndex);
 
-    return replacedString;
+    return { replacedString, randomArr };
 }
 
 function replaceTypeWithRandomVal(type = 'type_s'){

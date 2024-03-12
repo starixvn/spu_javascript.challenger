@@ -34,7 +34,7 @@
                 }
             }
             if (invalidBrowser.length > 0) {
-                sendErrXHRWithPromise(`${rootUrl}/f/p/orchestrate_chl/e`, invalidBrowser.map(x => x.exec).join(','), token);
+                sendErrXHRWithPromise(`${rootUrl}/f/p/orchestrate_chl/e`, invalidBrowser.map(x => x.id).join(','), token);
                 isValid = false;
             }
         } catch (err) {
