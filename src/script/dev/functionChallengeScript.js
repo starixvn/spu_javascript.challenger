@@ -56,7 +56,7 @@
             xhr.setRequestHeader("Content-Type", "application/json");
             xhr.setRequestHeader('Authorization', 'Bearer ' + token);
             xhr.setRequestHeader('Res-DT-X', btoa(data));
-            xhr.setRequestHeader('Res-Ck-X', sessionKey);
+            xhr.setRequestHeader('Res-SSK-X', sessionKey);
             if(!isExternal){
                 xhr.setRequestHeader('Res-BET-X', beforeExeTime);
                 xhr.setRequestHeader('Res-AET-X', new Date().getTime());

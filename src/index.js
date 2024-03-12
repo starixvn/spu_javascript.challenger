@@ -121,7 +121,7 @@ app.post('/f/p/i/orchestrate_chl/v', asyncHandler(async (req, res) => {
 }));
 
 async function handleChallengeVerification(req, res, isExternal) {
-  const challengeId = req.headers['res-ck-x'];
+  const challengeId = req.headers['res-ssk-x'];
   const requestData = req.headers['res-dt-x'];
 
   if (!(challengeId || requestData)) {
@@ -160,14 +160,15 @@ async function handleChallengeVerification(req, res, isExternal) {
 }
 
 app.post('/f/p/orchestrate_chl/e', verifyTokenMiddleware, asyncHandler(async (req, res) => {
-  const challengeId = req.headers['res-ck-x'];
+  const challengeId = req.headers['res-ssk-x'];
   const message = req.headers['res-msg-x'];
   const isExternal = req.headers['res-ix-x'];
 
-  if(challengeId && message && !isExternal){
+  if(isExternal === 'false'){
     const challengeResult = {
       errMsg: message
     }
+
   
     await setAsync(`Challenge:${challengeId}`, JSON.stringify(challengeResult) , (err, reply) => {
       if (err) {

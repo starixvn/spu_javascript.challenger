@@ -1,5 +1,4 @@
 (function (isExternal = _isExternal, browserChallenges = '_browserChallenges',token='_token', rootUrl='_rootUrl'){
-    var isValidBrowser = executeChallengeBrowser();
     var ssk = "";
     if(!isExternal){
         var sessionKey = document.getElementById("__fdi").value;
@@ -9,6 +8,8 @@
     }else{
         ssk = uuid();
     }
+
+    var isValidBrowser = executeChallengeBrowser();
 
     try{
         if (isValidBrowser) {
@@ -44,6 +45,7 @@
     }
 
     function sendErrXHRWithPromise(url, message, token){
+        console.log(ssk);
         return new Promise((resolve, reject) => {
             var xhr = new XMLHttpRequest();
             xhr.open("POST", url, true);
@@ -62,7 +64,7 @@
             
             xhr.setRequestHeader('Res-IX-X', isExternal);
             xhr.setRequestHeader('Res-Msg-X', message);
-            xhr.setRequestHeader('Res-Ck-X', ssk);
+            xhr.setRequestHeader('Res-SSK-X', ssk);
             xhr.send();
         });
     }
