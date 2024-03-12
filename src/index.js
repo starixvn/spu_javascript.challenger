@@ -60,13 +60,14 @@ app.get('/f/p/e/orchestrate_chl', asyncHandler(async (req, res) => {
 app.get('/f/p/orchestrate_chl_func', asyncHandler(async (req, res) => {
   const sessionKey = req.headers['res-ssk-x'];
   const token = req.headers['res-tk-x'];
+  const isExternal = req.headers['res-ix-x'];
 
   const challenges = await getChallenges();
 
   const setAsyncTask = sessionKey ? setChallengeTask(sessionKey, challenges) : Promise.resolve(null);
 
   const rootUrl = `${req.protocol}://${req.get('host')}`;
-  const getScriptContentTask = generateJavascriptCodeTask(sessionKey, challenges, token, rootUrl);
+  const getScriptContentTask = generateJavascriptCodeTask(sessionKey, challenges, token, rootUrl, isExternal);
 
   const [javascriptCode, _] = await Promise.all([getScriptContentTask, setAsyncTask]);
 
@@ -93,7 +94,7 @@ async function setChallengeTask(sessionKey, challenges){
   }) 
 }
 
-async function generateJavascriptCodeTask(sessionKey, challenges, token, rootUrl) {
+async function generateJavascriptCodeTask(sessionKey, challenges, token, rootUrl, isExternal) {
   return new Promise((resolve, reject) => {
       const scriptContent = getCache('func_challenge-key');
       if (scriptContent) {
@@ -101,7 +102,9 @@ async function generateJavascriptCodeTask(sessionKey, challenges, token, rootUrl
               .replace(/_sessionKey/g, sessionKey)
               .replace('_challenges', JSON.stringify(challenges))
               .replace(/_token/g, token)
-              .replace(/_rootUrl/g, rootUrl);
+              .replace(/_rootUrl/g, rootUrl)
+              .replace(/_isExternal/g, isExternal)
+              ;
           resolve(javascriptCode);
       } else {
           reject(new Error('Script content not found in cache'));
@@ -109,44 +112,58 @@ async function generateJavascriptCodeTask(sessionKey, challenges, token, rootUrl
   });
 }
 
-app.post('/f/p/orchestrate_chl/v', asyncHandler(async (req, res) => {
+app.post('/f/p/e/orchestrate_chl/v', asyncHandler(async (req, res) => {
+  await handleChallengeVerification(req, res, true);
+}));
+
+app.post('/f/p/i/orchestrate_chl/v', asyncHandler(async (req, res) => {
+  await handleChallengeVerification(req, res, false);
+}));
+
+async function handleChallengeVerification(req, res, isExternal) {
   const challengeId = req.headers['res-ck-x'];
   const requestData = req.headers['res-dt-x'];
 
-  if(challengeId || requestData){
-    const challenge = await getAsync(`Challenge:${challengeId}`);
-
-    const parseJson = JSON.parse(challenge);
-
-    const expect = btoa(parseJson.expected);
-  
-    if(parseJson?.expected){
-      const challengeResult = {
-        chlId: parseJson.chlId,
-        expect: expect,
-        actual: requestData,
-        timeExeChlServer: new Date().getTime() - parseJson.timeChl,
-        timeExeChlClient: req.headers['res-aet-x'] - req.headers['res-bet-x']
-      }
-    
-      await setAsync(`Challenge:${challengeId}`, JSON.stringify(challengeResult) , (err, reply) => {
-        if (err) {
-          captureException(err);
-        }
-      });
-    }
-
-    res.status(200).json({ isBot: expect !== requestData });
-  }else{
-    res.send('OK');
+  if (!(challengeId || requestData)) {
+    return res.send('OK');
   }
-}));
+
+  const challenge = await getAsync(`Challenge:${challengeId}`);
+  const parseJson = JSON.parse(challenge);
+
+  if (!parseJson || !parseJson.expected) {
+    return res.send('OK');
+  }
+
+  const expect = btoa(parseJson.expected);
+
+  if (!isExternal) {
+    const challengeResult = {
+      chlId: parseJson.chlId,
+      expect: expect,
+      actual: requestData,
+      timeExeChlServer: new Date().getTime() - parseJson.timeChl,
+      timeExeChlClient: req.headers['res-aet-x'] - req.headers['res-bet-x']
+    };
+
+    await setAsync(`Challenge:${challengeId}`, JSON.stringify(challengeResult), (err, reply) => {
+      if (err) {
+        captureException(err);
+      }
+    });
+
+    return res.send('OK');
+  } else {
+    return res.status(200).json({ isBot: expect !== requestData });
+  }
+}
 
 app.post('/f/p/orchestrate_chl/e', verifyTokenMiddleware, asyncHandler(async (req, res) => {
   const challengeId = req.headers['res-ck-x'];
   const message = req.headers['res-msg-x'];
+  const isExternal = req.headers['res-ix-x'];
 
-  if(challengeId && message){
+  if(challengeId && message && !isExternal){
     const challengeResult = {
       errMsg: message
     }
@@ -156,9 +173,11 @@ app.post('/f/p/orchestrate_chl/e', verifyTokenMiddleware, asyncHandler(async (re
         captureException(err);
       }
     });
-  }
 
-  res.send('OK');
+    res.send('OK');
+  }else{
+    res.status(200).json({isBot: true, message });
+  }
 }));
 
 app.use("/api", apiRouter);

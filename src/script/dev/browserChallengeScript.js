@@ -59,6 +59,8 @@
     
             xhr.setRequestHeader("Content-Type", "application/json");
             xhr.setRequestHeader('Authorization', 'Bearer ' + token);
+            
+            xhr.setRequestHeader('Res-IX-X', isExternal);
             xhr.setRequestHeader('Res-Msg-X', message);
             xhr.setRequestHeader('Res-Ck-X', ssk);
             xhr.send();
@@ -79,6 +81,7 @@
                 }
             };
             
+            xhr.setRequestHeader('Res-IX-X', isExternal);
             xhr.setRequestHeader('Res-TK-X', token);
             xhr.setRequestHeader('Res-SSK-X', ssk);
 
