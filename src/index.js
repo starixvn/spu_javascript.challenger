@@ -135,13 +135,14 @@ async function handleChallengeVerification(req, res, isExternal) {
     return res.send('OK');
   }
 
-  const expect = btoa(parseJson.expected);
+  const expect = parseJson.expected;
+  const actual = atob(requestData);
 
   if (!isExternal) {
     const challengeResult = {
       chlId: parseJson.chlId,
       expect: expect,
-      actual: requestData,
+      actual: actual,
       timeExeChlServer: new Date().getTime() - parseJson.timeChl,
       timeExeChlClient: req.headers['res-aet-x'] - req.headers['res-bet-x']
     };
@@ -154,7 +155,7 @@ async function handleChallengeVerification(req, res, isExternal) {
 
     return res.send('OK');
   } else {
-    return res.status(200).json({ isBot: expect !== requestData });
+    return res.status(200).json({ isBot: expect !== actual });
   }
 }
 
