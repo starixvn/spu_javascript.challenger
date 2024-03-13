@@ -9,9 +9,9 @@
         .then(results => {
             if (results) {
                 if(isExternal){
-                    sendXHRWithPromise(rootUrl + '/f/p/e/orchestrate_chl/v', results.join(','), true);
+                    sendRequestVerify(rootUrl + '/f/p/e/orchestrate_chl/v', results.join(','), true);
                 }else{
-                    sendXHRWithPromise(rootUrl + '/f/p/i/orchestrate_chl/v', results.join(','), false);
+                    sendRequestVerify(rootUrl + '/f/p/i/orchestrate_chl/v', results.join(','), false);
                 }
             }
         })
@@ -39,10 +39,26 @@
         return Promise.all(promises.map(p => Promise.race([p, timeoutPromise])));
     }
 
-    function sendXHRWithPromise(url, data, isExternal){
+    function sendRequestVerify(url, data, isExternal){
+        var headers = {
+            "Content-Type": "application/json",
+            'Authorization': 'Bearer ' + token,
+            'Res-DT-X': btoa(data),
+            'Res-SSK-X': sessionKey
+        };
+
+        if(!isExternal){
+            headers['Res-BET-X'] = beforeExeTime;
+            headers['Res-AET-X'] = new Date().getTime();
+        }
+
+        return sendXHRWithPromise(url, "POST", headers);
+    }
+
+    function sendXHRWithPromise(url, method, headers = {}){
         return new Promise((resolve, reject) => {
             var xhr = new XMLHttpRequest();
-            xhr.open("POST", url, true);
+            xhr.open(method, url, true);
             xhr.onreadystatechange = function () {
                 if (xhr.readyState === 4) {
                     if (xhr.status >= 200 && xhr.status < 300) {
@@ -53,14 +69,10 @@
                 }
             };
     
-            xhr.setRequestHeader("Content-Type", "application/json");
-            xhr.setRequestHeader('Authorization', 'Bearer ' + token);
-            xhr.setRequestHeader('Res-DT-X', btoa(data));
-            xhr.setRequestHeader('Res-SSK-X', sessionKey);
-            if(!isExternal){
-                xhr.setRequestHeader('Res-BET-X', beforeExeTime);
-                xhr.setRequestHeader('Res-AET-X', new Date().getTime());
+            for (var header in headers) {
+                xhr.setRequestHeader(header, headers[header]);
             }
+    
             xhr.send();
         });
     }

@@ -1,49 +1,15 @@
 const NodeCache = require( "node-cache" );
 const cache = new NodeCache();
 
-const keyChallenge = 'js-challenge-key';
 const defaultTtl = 300; //seconds
 
-const getCache = (key = keyChallenge) =>{
-    try{
-        if(cache.has(key)){ 
-            return cache.get(key);
-        }
-        return null;
-    }catch(err){
-        console.error(err)
-        cache.close();
-    }
-    
-};
+const getCache = key => cache.get(key);
 
-const setCache = (key = keyChallenge, value) =>{
-    try{
-        cache.set(key, value, 0);
-    }catch(err){
-        console.error(err)
-        cache.close();
-    }
-};
+const setCache = (key, value) => cache.set(key, value, 0);
 
+const delCache = key =>  cache.del(key);
 
-const delCache = (key = keyChallenge) =>{
-    try{
-        cache.del(key);
-    }catch(err){
-        console.error(err)
-        cache.close();
-    }
-}
-
-const changeTtlCache = (key = keyChallenge, ttl = defaultTtl) =>{
-    try{
-        cache.ttl(key, ttl);
-    }catch(err){
-        console.error(err)
-        cache.close();
-    }
-};
+const changeTtlCache = (key, ttl = defaultTtl) => cache.ttl(key, ttl);
 
 module.exports = {
     getCache,

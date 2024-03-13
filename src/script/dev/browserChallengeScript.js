@@ -1,3 +1,5 @@
+const { sendXHRWithPromise } = require('../httpRequest');
+
 (function (isExternal = _isExternal, browserChallenges = '_browserChallenges',token='_token', rootUrl='_rootUrl'){
     var ssk = "";
     if(!isExternal){
@@ -13,7 +15,7 @@
 
     try{
         if (isValidBrowser) {
-           getScriptWithPromise(rootUrl+'/f/p/orchestrate_chl_func').then(scriptContent => {
+           getScriptFunction(rootUrl+'/f/p/orchestrate_chl_func').then(scriptContent => {
                 eval(scriptContent);
             });
         }
@@ -27,28 +29,49 @@
             var challenge = eval(browserChallenges);
             var invalidBrowser = [];
             for (var i = 0; i < JSON.parse(challenge).length; i++) {
-                var x = JSON.parse(challenge)[i];
-                var result = typeof x.exec === 'function' ? x.exec() : eval(x.exec);
-                if (result !== x.expect) {
-                    invalidBrowser.push(x);
+                var chlJson = JSON.parse(challenge)[i];
+                var result = eval(chlJson.exec);
+                if (result !== chlJson.expect) {
+                    invalidBrowser.push(chlJson);
                 }
             }
             if (invalidBrowser.length > 0) {
-                sendErrXHRWithPromise(`${rootUrl}/f/p/orchestrate_chl/e`, invalidBrowser.map(x => x.id).join(','), token);
+                sendErrorChallenge(rootUrl + '/f/p/orchestrate_chl/e', invalidBrowser.map(function(x) { return x.id;}).join(','), token);
                 isValid = false;
             }
         } catch (err) {
-            sendErrXHRWithPromise(`${rootUrl}/f/p/orchestrate_chl/e`, err.message, token);
+            sendErrorChallenge(rootUrl + '/f/p/orchestrate_chl/e', err.message, token);
             isValid = false;
         }
         return isValid;
     }
 
-    function sendErrXHRWithPromise(url, message, token){
-        console.log(ssk);
+    function sendErrorChallenge(url, message, token){
+        var headers = {
+            "Content-Type": "application/json",
+            'Authorization': 'Bearer ' + token,
+            'Res-IX-X': isExternal,
+            'Res-Msg-X': message,
+            'Res-SSK-X': ssk
+        };
+
+        sendXHRWithPromise(url, "POST", headers);
+    }
+
+    function getScriptFunction(url){
+        var headers = {
+            'Res-IX-X': isExternal,
+            'Res-TK-X': token,
+            'Res-SSK-X': ssk
+        };
+
+        return sendXHRWithPromise(url, "GET", headers);
+    }
+
+    function sendXHRWithPromise(url, method, headers = {}){
         return new Promise((resolve, reject) => {
             var xhr = new XMLHttpRequest();
-            xhr.open("POST", url, true);
+            xhr.open(method, url, true);
             xhr.onreadystatechange = function () {
                 if (xhr.readyState === 4) {
                     if (xhr.status >= 200 && xhr.status < 300) {
@@ -59,34 +82,10 @@
                 }
             };
     
-            xhr.setRequestHeader("Content-Type", "application/json");
-            xhr.setRequestHeader('Authorization', 'Bearer ' + token);
-            
-            xhr.setRequestHeader('Res-IX-X', isExternal);
-            xhr.setRequestHeader('Res-Msg-X', message);
-            xhr.setRequestHeader('Res-SSK-X', ssk);
-            xhr.send();
-        });
-    }
-
-    function getScriptWithPromise(url){
-        return new Promise((resolve, reject) => {
-            var xhr = new XMLHttpRequest();
-            xhr.open("GET", url, true);
-            xhr.onreadystatechange = function () {
-                if (xhr.readyState === 4) {
-                    if (xhr.status >= 200 && xhr.status < 300) {
-                        resolve(xhr.responseText);
-                    } else {
-                        reject(new Error(xhr.statusText));
-                    }
-                }
-            };
-            
-            xhr.setRequestHeader('Res-IX-X', isExternal);
-            xhr.setRequestHeader('Res-TK-X', token);
-            xhr.setRequestHeader('Res-SSK-X', ssk);
-
+            for (var header in headers) {
+                xhr.setRequestHeader(header, headers[header]);
+            }
+    
             xhr.send();
         });
     }

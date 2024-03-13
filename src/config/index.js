@@ -20,7 +20,7 @@ module.exports = {
 
     RANDOM_NUM_CHALLENGES: process.env['RANDOM_NUM_CHALLENGES'],
     RANDOM_LENGTH_STRING: process.env['RANDOM_LENGTH_STRING'],
-    MIN: process.env['MIN'],
-    MAX: process.env['MAX'],
+    MIN: process.env['MIN_RANDOM_NUMBER'],
+    MAX: process.env['MAX_RANDOM_NUMBER'],
     RANDOM_LENGTH_ARRAY: process.env['RANDOM_LENGTH_ARRAY']
 }

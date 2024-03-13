@@ -5,5 +5,8 @@ module.exports = {
       TYPE_ARRAY: 'type_a',
       TYPE_ARRAY_OF_OBJECT: 'type_Aoj',
       TYPE_OBJECT: 'type_oj',
-  }
+  },
+  BROWSER_CHALLENGE_KEY: 'browser-challenge-key',
+  JS_CHALLENGE_KEY: 'js-challenge-key',
+  FUNC_CHALLENGE_KEY: 'func_challenge-key'
 };

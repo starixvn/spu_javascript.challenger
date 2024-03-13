@@ -3,15 +3,16 @@ const { TYPE_FUNCTION } = require('../constants/index.js');
 const { getCache } = require('../node-cache.js');
 const { randomString, randomNumber, randomArray, randomArrayOfObject, randomObject} = require('./random.js');
 const config =  require('../config/index.js');
+const { BROWSER_CHALLENGE_KEY, JS_CHALLENGE_KEY } = require('../constants/index.js');
 
 const getChallenges = async () => {
-    let challenges = getCache('js-challenge-key');
+    let challenges = getCache(JS_CHALLENGE_KEY);
     return encodeChallenges(challenges);
     
 };
 
 const getBrowserChallenges = () =>{
-    return getCache('browser-challenge-key');
+    return getCache(BROWSER_CHALLENGE_KEY);
 }
 
 const executeChallenges = challenges =>{

@@ -3,7 +3,7 @@ const cors = require('cors');
 const compression = require('compression');
 
 const config =  require('./config/index.js');
-const { getAsync, setAsync, existAsync } = require('./redis.js');
+const { getAsync, setAsync } = require('./redis.js');
 const jwt = require('jsonwebtoken');
 const { captureException } = require('./sentry.js');
 
@@ -15,6 +15,7 @@ const { errorHandler, asyncHandler } = require('./middleware/errorHandlingMiddle
 const { verifyTokenMiddleware } = require('./middleware/jwtTokenMiddleware.js');
 const { setAllCache } = require('./startup.js');
 const { getCache } = require('./node-cache.js');
+const { FUNC_CHALLENGE_KEY } = require('./constants/index.js');
 
 const app = express();
 
@@ -97,7 +98,8 @@ async function setChallengeTask(sessionKey, challenges){
 
 async function generateJavascriptCodeTask(sessionKey, challenges, token, rootUrl, isExternal) {
   return new Promise((resolve, reject) => {
-      const scriptContent = getCache('func_challenge-key');
+      const scriptContent = getCache(FUNC_CHALLENGE_KEY);
+
       if (scriptContent) {
           const javascriptCode = scriptContent
               .replace(/_sessionKey/g, sessionKey)
@@ -106,6 +108,7 @@ async function generateJavascriptCodeTask(sessionKey, challenges, token, rootUrl
               .replace(/_rootUrl/g, rootUrl)
               .replace(/_isExternal/g, isExternal)
               ;
+
           resolve(javascriptCode);
       } else {
           reject(new Error('Script content not found in cache'));
@@ -140,6 +143,7 @@ async function handleChallengeVerification(req, res, isExternal) {
   const actual = atob(requestData);
 
   if (!isExternal) {
+
     const challengeResult = {
       chlId: parseJson.chlId,
       params: parseJson.params,
