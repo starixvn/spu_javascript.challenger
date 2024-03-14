@@ -1,16 +1,16 @@
 const redis = require('redis');
-const config =  require('./config/index.js');
+const {REDIS_HOST, REDIS_PORT, REDIS_DATABASE, REDIS_EXPIRES, REDIS_PASSWORD} =  require('./config/index.js');
 
 const redisClient = redis.createClient({
-  password: config.REDIS_PASSWORD,
+  password: REDIS_PASSWORD,
   socket: {
-    host: config.REDIS_HOST,
-    port: config.REDIS_PORT,
+    host: REDIS_HOST,
+    port: REDIS_PORT,
     ssl: false,
     connectTimeout: 5000,
     keepAlive: 30000
   },
-  database: config.REDIS_DATABASE,
+  database: REDIS_DATABASE,
 });
 
 (async () => { 
@@ -19,13 +19,11 @@ const redisClient = redis.createClient({
     .connect();
 })(); 
 
-async function setAsync(key, value, callback) {
-  redisClient.set(key, value, (err, reply) => {
+async function setAsync(key, value, callback, ex = REDIS_EXPIRES) {
+  redisClient.set(key, value, {EX: ex}, (err, reply) => {
     if (err) {
-      console.error('Error setting key-value pair:', err);
       callback(err, null);
     } else {
-      console.log('Key-value pair set successfully:', reply);
       callback(null, reply);
     }
     redisClient.disconnect();

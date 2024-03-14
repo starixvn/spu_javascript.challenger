@@ -98,7 +98,7 @@ async function handleChallengeVerification(req, res, isExternal) {
     timeExeChlClient: req.headers["res-aet-x"] - req.headers["res-bet-x"],
   };
 
-  const isBot = await verifyChallenge(challengeResult, actual, isExternal);
+  const isBot = await verifyChallenge(challengeId, challengeResult, actual, isExternal);
 
   if (!isExternal) {
     return res.status(200).send();

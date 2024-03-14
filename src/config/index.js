@@ -13,6 +13,7 @@ module.exports = {
     REDIS_PORT: process.env['REDIS_PORT'] || 16379,
     REDIS_PASSWORD: process.env['REDIS_PASSWORD'] || 'foo1@bared',
     REDIS_DATABASE: process.env['REDIS_DATABASE'] || 14,
+    REDIS_EXPIRES: process.env['REDIS_EXPIRES'] || 30,
 
     JWT_ID: process.env['JWT_ID'],
     JWT_EXPIRES: process.env['JWT_EXPIRES'],
