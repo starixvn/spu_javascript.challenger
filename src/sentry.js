@@ -1,10 +1,11 @@
 const Sentry = require("@sentry/node");
+const { SENTRY_DNS } = require('./config/index');
 
 let initialized = false;
 
 const initSentry = () => {
     if (!initialized) {
-        Sentry.init({ dsn: 'https://ed8e16114a244f55b83976f89b313361@sentry.nexdev.net/141' });
+        Sentry.init({ dsn: SENTRY_DNS });
     }
 
     initialized = true;

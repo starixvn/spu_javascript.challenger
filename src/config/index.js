@@ -18,6 +18,8 @@ module.exports = {
     JWT_EXPIRES: process.env['JWT_EXPIRES'],
     SECRET_KEY: process.env['SECRET_KEY'],
 
+    SENTRY_DNS: process.env['SENTRY_DNS'],
+
     RANDOM_NUM_CHALLENGES: process.env['RANDOM_NUM_CHALLENGES'],
     RANDOM_LENGTH_STRING: process.env['RANDOM_LENGTH_STRING'],
     MIN: process.env['MIN_RANDOM_NUMBER'],
