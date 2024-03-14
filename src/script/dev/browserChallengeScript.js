@@ -1,5 +1,3 @@
-const { sendXHRWithPromise } = require('../httpRequest');
-
 (function (isExternal = _isExternal, browserChallenges = '_browserChallenges',token='_token', rootUrl='_rootUrl'){
     var ssk = "";
     if(!isExternal){

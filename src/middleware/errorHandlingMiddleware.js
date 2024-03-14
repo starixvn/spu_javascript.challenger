@@ -1,6 +1,7 @@
 const { captureException } = require('../sentry.js');
 const config =  require('../config/index.js');
 
+
 const errorHandler = (err, req, res, next) =>{
     if(config.NODE_ENV === 'development'){
         res.status(500).json({ error: err.stack });
