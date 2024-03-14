@@ -4,15 +4,6 @@ import nodejsLogo from "./nodejs-logo.svg";
 import "./App.css";
 
 function App() {
-  const [users, setUsers] = useState([]);
-
-  useEffect(() => {
-    fetch("/api/users")
-      .then(res => res.json())
-      .then(json => setUsers(json.users));
-    return () => {};
-  }, []);
-
   return (
     <div className="App">
       <header className="App-header">
@@ -29,10 +20,6 @@ function App() {
           Node.js app.
         </p>
         <br />
-        <p>
-          <code>GET /api/users</code>:{" "}
-          {users.length ? users.join(", ") : "loading..."}
-        </p>
         <br />
         <p>
           Docs:{" "}

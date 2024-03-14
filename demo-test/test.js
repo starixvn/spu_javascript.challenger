@@ -1,6 +1,6 @@
-const { getObfuscatedCode } = require('../src/components/jsObfuscator.js');
-const {replaceParameterValues} = require('../src/challenges/index.js');
-const JSFuck = require('../src/components/jsfuck.js').JSFuck;
+const { getObfuscatedCode } = require('../server/components/jsObfuscator.js');
+const {replaceParameterValues} = require('../server/challenges/index.js');
+const JSFuck = require('../server/components/jsfuck.js').JSFuck;
 
 (async function () {
     const startTime = Date.now();

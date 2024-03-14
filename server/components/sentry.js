@@ -1,5 +1,5 @@
 const Sentry = require("@sentry/node");
-const { SENTRY_DNS } = require('./config/index');
+const { SENTRY_DNS } = require('../config/index');
 
 let initialized = false;
 

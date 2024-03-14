@@ -1,6 +1,6 @@
 const JSFuck = require('../components/jsfuck.js').JSFuck;
 const { TYPE_FUNCTION } = require('../constants/index.js');
-const { getCache } = require('../node-cache.js');
+const { getCache } = require('../components/node-cache.js');
 const { randomString, randomNumber, randomArray, randomArrayOfObject, randomObject} = require('./random.js');
 const config =  require('../config/index.js');
 const { BROWSER_CHALLENGE_KEY, JS_CHALLENGE_KEY } = require('../constants/index.js');
@@ -8,7 +8,6 @@ const { BROWSER_CHALLENGE_KEY, JS_CHALLENGE_KEY } = require('../constants/index.
 const getChallenges = async () => {
     let challenges = getCache(JS_CHALLENGE_KEY);
     return encodeChallenges(challenges);
-    
 };
 
 const getBrowserChallenges = () =>{

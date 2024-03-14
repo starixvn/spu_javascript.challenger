@@ -1,8 +1,8 @@
 const fs = require('node:fs');
 const path = require('path');
 const { getObfuscatedCode } = require('../components/jsObfuscator');
-const { setAsync } = require("../redis.js");
-const { captureException } = require("../sentry.js");
+const { setAsync } = require("../components/redis.js");
+const { captureException } = require("../components/sentry.js");
 
 const getAllChallenges = async () =>{
     try{

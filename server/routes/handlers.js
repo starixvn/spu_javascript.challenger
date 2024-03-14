@@ -1,21 +1,28 @@
-const { getAsync, setAsync } = require("../redis.js");
-const { getCache } = require("../node-cache.js");
+const { getAsync, setAsync } = require("../components/redis.js");
 
 const jwt = require("jsonwebtoken");
+const fs = require('node:fs');
+const path = require('path');
 
-const { FUNC_CHALLENGE_KEY } = require("../constants/index.js");
 const { executeChallenges } = require("../challenges/index.js");
-const { captureException } = require("../sentry.js");
+const { captureException } = require("../components/sentry.js");
 const config = require('../config/index.js');
 const { verifyChallenge  } = require('../challenges/challengeFunc.js');
+const JSFuck = require('../components/jsfuck.js').JSFuck;
+const { BROWSER_CHALLENGES } = require('../constants/browserChallenge.js');
+const { NODE_ENV } = require('../config/index');
+const env = NODE_ENV === 'development' ? 'dev' : 'pro';
 
-function getScriptBrowserChallenge(req, res, isExternal) {
+async function getScriptChallenge(req, res, isExternal) {
   const token = getToken();
   const rootUrl = `${req.protocol}://${req.get("host")}`;
-  const scriptContent = getCache("browser-challenge-key");
+
+  const encode = JSFuck.encode(JSON.stringify(BROWSER_CHALLENGES));
+  const scriptContent = await fs.readFileSync(path.resolve(__dirname,`../script/${env}/challengeScript.js`), 'utf-8');
 
   const javascriptCode = scriptContent
     .replace(/_isExternal/g, isExternal)
+    .replace(/_browserChallenges/g, encode)
     .replace(/_token/g, token)
     .replace(/_rootUrl/g, rootUrl);
 
@@ -24,51 +31,22 @@ function getScriptBrowserChallenge(req, res, isExternal) {
   res.send(javascriptCode);
 }
 
-async function setChallengeTask(sessionKey, challenges) {
-  return new Promise((resolve, reject) => {
-    const challengeExpected = executeChallenges(challenges);
-    const parseJson = JSON.stringify({
-      chlId: challenges.map((x) => x.id).join(","),
-      params: challenges.map((x) => x.randomVal).join(", "),
-      expected: challengeExpected,
-      timeChl: new Date().getTime(),
-    });
-
-    resolve(
-        setAsync(`Challenge:${sessionKey}`, parseJson, (err, reply) => {
-        if (err) {
-          captureException(err);
-          reject(err);
-        }
-      })
-    );
+async function setCacheChallenge(sessionKey, challenges) {
+  const challengeExpected = executeChallenges(challenges);
+  const parseJson = JSON.stringify({
+    chlId: challenges.map((x) => x.id).join(","),
+    params: challenges.map((x) => x.randomVal).join(", "),
+    expected: challengeExpected,
+    timeChl: new Date().getTime(),
   });
-}
 
-async function getScriptFuncChallengeTask(
-  sessionKey,
-  challenges,
-  token,
-  rootUrl,
-  isExternal
-) {
-  return new Promise((resolve, reject) => {
-    const scriptContent = getCache(FUNC_CHALLENGE_KEY);
-
-    if (scriptContent) {
-      const javascriptCode = scriptContent
-        .replace(/_sessionKey/g, sessionKey)
-        .replace("_challenges", JSON.stringify(challenges))
-        .replace(/_token/g, token)
-        .replace(/_rootUrl/g, rootUrl)
-        .replace(/_isExternal/g, isExternal);
-
-      resolve(javascriptCode);
-    } else {
-      reject(new Error("Script content not found in cache"));
+  await setAsync(`Challenge:${sessionKey}`, parseJson, (err, reply) => {
+    if (err) {
+      captureException(err);
+      reject(err);
     }
-  });
-}
+  })
+} 
 
 async function handleChallengeVerification(req, res, isExternal) {
   const challengeId = req.headers["res-ssk-x"];
@@ -117,8 +95,7 @@ const getToken = () => {
 };
 
 module.exports = {
-    getScriptBrowserChallenge,
-    setChallengeTask,
-    getScriptFuncChallengeTask,
+    getScriptChallenge,
+    setCacheChallenge,
     handleChallengeVerification
 }

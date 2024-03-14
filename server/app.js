@@ -3,14 +3,15 @@ const compression = require('compression');
 const cors = require('cors');
 
 const path = require('path');
-const apiRouter = require("./routes/api");
 const { errorHandler } = require('./middleware/errorHandlingMiddleware.js');
-const { setAllCache } = require('./startup.js');
+const { setCacheChallenges } = require('./components/startup.js');
 const config =  require('./config/index.js');
+
+const router = require('./routes/index.js');
 
 const app = express();
 
-setAllCache();
+setCacheChallenges();
 
 app.enable('trust proxy');
 
@@ -20,10 +21,12 @@ app.use(compression());
 
 app.use(express.json());
 
-app.use("/api", apiRouter);
+app.use("/", router);
 
 app.use(express.static(path.join(__dirname, config.NODE_ENV === 'development' ? "../client/build" : "/client/build")));
 
-app.use(errorHandler)
+app.use(errorHandler);
 
-module.exports = app;
+app.listen(config.PORT, () => {
+    console.log(`Server is running on http://localhost:${config.PORT}`);
+});
