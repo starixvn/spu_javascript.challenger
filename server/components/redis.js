@@ -1,21 +1,13 @@
 const redis = require('redis');
 const {REDIS_HOST, REDIS_PORT, REDIS_DATABASE, REDIS_EXPIRES, REDIS_PASSWORD} =  require('../config/index.js');
 
-const redisClient = redis.createClient({
-  password: REDIS_PASSWORD,
-  socket: {
-    host: REDIS_HOST,
-    port: REDIS_PORT,
-    ssl: false,
-    connectTimeout: 5000,
-    keepAlive: 30000
-  },
-  database: REDIS_DATABASE,
-});
+let redisClient = createClient();
 
 (async () => { 
     await redisClient
-    .on('error', err => console.log('Redis Client Error', err))
+    .on('error', err => {
+      console.log('Redis client error:', err.message);
+    })
     .connect();
 })(); 
 
@@ -36,6 +28,24 @@ async function getAsync(key) {
 
 async function existAsync(key) {
   return await redisClient.exists(key);
+}
+
+function createClient() {
+  return redis.createClient({
+    password: REDIS_PASSWORD,
+    socket: {
+      host: REDIS_HOST,
+      port: REDIS_PORT,
+      ssl: false,
+      connectTimeout: 5000,
+      keepAlive: 30000,
+      reconnectStrategy: (attempts) => {
+        console.log(`Redis reconnecting attempt ${attempts}`);
+        return 5000;
+      },
+    },
+    database: REDIS_DATABASE,
+  })
 }
 
 module.exports = {

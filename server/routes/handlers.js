@@ -33,17 +33,17 @@ async function getScriptChallenge(req, res, isExternal) {
 
 async function setCacheChallenge(sessionKey, challenges) {
   const challengeExpected = executeChallenges(challenges);
+
   const parseJson = JSON.stringify({
-    chlId: challenges.map((x) => x.id).join(","),
-    params: challenges.map((x) => x.randomVal).join(", "),
-    expected: challengeExpected,
-    timeChl: new Date().getTime(),
+    ChallengeIds: challenges.map((x) => x.id).join(","),
+    Parameters: challenges.map((x) => x.randomVal).join(", "),
+    Expected: challengeExpected,
+    TimeChl: new Date().getTime(),
   });
 
   await setAsync(`Challenge:${sessionKey}`, parseJson, (err, reply) => {
     if (err) {
       captureException(err);
-      reject(err);
     }
   })
 } 
@@ -59,21 +59,21 @@ async function handleChallengeVerification(req, res, isExternal) {
   const challenge = await getAsync(`Challenge:${challengeId}`);
   const parseJson = JSON.parse(challenge);
 
-  const { chlId, params, expected, timeChl } = parseJson;
+  const { ChallengeIds, Parameters, Expected, TimeChl } = parseJson;
 
-  if (!parseJson || !expected) {
+  if (!parseJson || !Expected) {
     return res.status(403).send();
   }
 
   const actual = atob(requestData);
 
   const challengeResult = {
-    chlId: chlId,
-    params: params,
-    expect: expected,
-    actual: actual,
-    timeExeChlServer: new Date().getTime() - timeChl,
-    timeExeChlClient: req.headers["res-aet-x"] - req.headers["res-bet-x"],
+    ChallengeIds: ChallengeIds,
+    Parameters: Parameters,
+    Expect: Expected,
+    Actual: actual,
+    ExeServerTimeInSecond: new Date().getTime() - TimeChl,
+    ExeClientTimeInSecond: req.headers["res-aet-x"] - req.headers["res-bet-x"],
   };
 
   const isBot = await verifyChallenge(challengeId, challengeResult, actual, isExternal);

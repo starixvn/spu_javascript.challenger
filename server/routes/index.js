@@ -52,11 +52,11 @@ router.get('/f/p/orchestrate_chl_func', asyncHandler(async (req, res) => {
   res.status(200).send(challengesEncode);
 }));
 
-router.post('/f/p/e/orchestrate_chl/v', asyncHandler(async (req, res) => {
+router.post('/f/p/e/orchestrate_chl/v', verifyTokenMiddleware, asyncHandler(async (req, res) => {
   await handleChallengeVerification(req, res, true);
 }));
 
-router.post('/f/p/i/orchestrate_chl/v', asyncHandler(async (req, res) => {
+router.post('/f/p/i/orchestrate_chl/v', verifyTokenMiddleware, asyncHandler(async (req, res) => {
   await handleChallengeVerification(req, res, false);
 }));
 
