@@ -61,18 +61,22 @@
     },
     {
         "id": 16,
-        "func": "function matchHouses(step = type_n) { if (step === 0) { return 0; } else { return 5 * step + 1; } }"
+        "func": "function comp(a = type_s, b = type_s) { return a.length === b.length; }"
     },
     {
         "id": 17,
-        "func": "function shiftToLeft(x = type_n, y = type_n) { return x * Math.pow(2, y); }"
+        "func": "function matchHouses(step = type_n) { if (step === 0) { return 0; } else { return 5 * step + 1; } }"
     },
     {
         "id": 18,
-        "func": "function minMax(arr = type_a) { arr.sort((a, b) => a - b); return [arr[0], arr[arr.length - 1]]; }"
+        "func": "function shiftToLeft(x = type_n, y = type_n) { return x * Math.pow(2, y); }"
     },
     {
         "id": 19,
+        "func": "function minMax(arr = type_a) { arr.sort((a, b) => a - b); return [arr[0], arr[arr.length - 1]]; }"
+    },
+    {
+        "id": 20,
         "func": "function binary(decimal = type_n) { if (decimal === 0) { return '0'; } let binaryString = ''; while (decimal > 0) { binaryString = (decimal % 2) + binaryString; decimal = Math.floor(decimal / 2); } return binaryString; }"
     }
 ]

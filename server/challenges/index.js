@@ -20,9 +20,10 @@ const executeChallenges = challenges =>{
 };
 
 function encodeChallenges(challenges){
-    const randomChallenges = getRandomItemsFromArray(challenges);
+    const { NUM_CHALLENGE_IDS} = config;
+    const challengesRandom = NUM_CHALLENGE_IDS?.length > 0 ? getChallengesFromSetting(NUM_CHALLENGE_IDS.split(','), challenges) : getRandomItemsFromArray(challenges);
 
-    return randomChallenges.map(chl =>{
+    return challengesRandom.map(chl =>{
         const { funcString, randomVal } = replaceParameterValues(chl.item.obfuscated);
 
         const randomValJoin = randomVal.map(random => random).join(':');
@@ -34,6 +35,19 @@ function encodeChallenges(challenges){
             randomVal: randomValJoin
         }
     });
+}
+
+function getChallengesFromSetting(settingChlIds, arr) {
+    const challengesFilter = arr.filter(x => settingChlIds.includes(x.id.toString()));
+
+    const challenges = challengesFilter.map(item => {
+        return {
+            index: item.id,
+            item: item
+        }
+    });
+
+    return challenges;
 }
 
 function getRandomItemsFromArray(arr) {

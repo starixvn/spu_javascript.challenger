@@ -22,8 +22,11 @@ module.exports = {
     SENTRY_DNS: process.env['SENTRY_DNS'],
 
     RANDOM_NUM_CHALLENGES: process.env['RANDOM_NUM_CHALLENGES'],
-    RANDOM_LENGTH_STRING: process.env['RANDOM_LENGTH_STRING'],
+    NUM_CHALLENGE_IDS: process.env['NUM_CHALLENGE_IDS'] || '',
+
     MIN: process.env['MIN_RANDOM_NUMBER'],
     MAX: process.env['MAX_RANDOM_NUMBER'],
+
+    RANDOM_LENGTH_STRING: process.env['RANDOM_LENGTH_STRING'],
     RANDOM_LENGTH_ARRAY: process.env['RANDOM_LENGTH_ARRAY']
 }
