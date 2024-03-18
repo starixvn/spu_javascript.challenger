@@ -76,7 +76,6 @@ function replaceParameterValues(funcString) {
     return { funcString, randomVal };
 }
 
-
 function replaceOccurrencesWithIndex(inputString, searchString) {
     let replacedString = '';
     let currentIndex = 1;
