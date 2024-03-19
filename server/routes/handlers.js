@@ -23,7 +23,6 @@ async function getScriptChallenge(req, res, isExternal) {
   const javascriptCode = scriptContent
     .replace(/_isExternal/g, isExternal)
     .replace(/_browserChallenges/g, encode)
-    .replace(/_token/g, token)
     .replace(/_rootUrl/g, rootUrl);
 
   res.setHeader("Content-Type", "application/javascript");

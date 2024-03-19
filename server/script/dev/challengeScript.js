@@ -1,5 +1,8 @@
-(function (isExternal = _isExternal, browserChallenges = '_browserChallenges', token = '_token', rootUrl = '_rootUrl') {
+(function (isExternal = _isExternal, browserChallenges = '_browserChallenges', rootUrl = '_rootUrl') {
   var ssk = "";
+  var tokenElement = document.getElementById("__fdi__token");
+  var token = tokenElement !== null ? tokenElement.value : null;
+
   if (!isExternal) {
     var sessionKey = document.getElementById("__fdi").value;
     if (sessionKey !== undefined && sessionKey.length > 0) {
