@@ -6,7 +6,6 @@ let redisClient = createClient();
 (async () => { 
     await redisClient
     .on('error', err => {
-      console.log('Redis client error:', err.message);
     })
     .connect();
 })(); 
@@ -40,7 +39,6 @@ function createClient() {
       connectTimeout: 5000,
       keepAlive: 30000,
       reconnectStrategy: (attempts) => {
-        console.log(`Redis reconnecting attempt ${attempts}`);
         return 5000;
       },
     },
