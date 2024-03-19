@@ -40,7 +40,7 @@ async function setCacheChallenge(sessionKey, challenges) {
     TimeChl: new Date().getTime(),
   });
 
-  await setAsync(`Challenge:${sessionKey}`, parseJson, (err, reply) => {
+  setAsync(`Challenge:${sessionKey}`, parseJson, (err, reply) => {
     if (err) {
       captureException(err);
     }

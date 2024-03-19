@@ -5,7 +5,7 @@ const { randomString, randomNumber, randomArray, randomArrayOfObject, randomObje
 const config =  require('../config/index.js');
 const { BROWSER_CHALLENGE_KEY, JS_CHALLENGE_KEY } = require('../constants/index.js');
 
-const getChallenges = async () => {
+const getChallenges = () => {
     let challenges = getCache(JS_CHALLENGE_KEY);
     return encodeChallenges(challenges);
 };

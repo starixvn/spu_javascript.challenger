@@ -36,7 +36,7 @@ router.get('/f/p/orchestrate_chl_func', asyncHandler(async (req, res) => {
   const sessionKey = req.headers['res-ssk-x'];
   const isExternal = req.headers['res-ix-x'];
 
-  const challenges = await getChallenges();
+  const challenges = getChallenges();
 
   if(isExternal && sessionKey){
     setCacheChallenge(sessionKey, challenges)

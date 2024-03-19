@@ -30,7 +30,7 @@ const verifyChallenge = async (challengeId, challengeResult, actual, isExternal)
 
         const isBot = !rule1 || !rule2 || !rule3;
 
-        await setAsync(
+        setAsync(
             `Challenge:${challengeId}`,
             JSON.stringify({...challengeResult, result: !isBot}), (err, reply) => {
               if (err) {
