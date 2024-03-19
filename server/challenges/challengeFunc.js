@@ -20,6 +20,13 @@ const getAllChallenges = async () =>{
     }
 }
 
+const getChallengeSetting = async () => {
+    const data =  await fs.readFileSync(path.resolve(__dirname,'./challengeSetting.json'), 'utf8');
+    const parseData = JSON.parse(data);
+
+    return parseData;
+}
+
 const verifyChallenge = async (challengeId, challengeResult, actual, isExternal) =>{
     const {expect, timeExeChlServer, timeExeChlClient} = challengeResult;
   
@@ -47,5 +54,6 @@ const verifyChallenge = async (challengeId, challengeResult, actual, isExternal)
 
 module.exports = {
     getAllChallenges,
+    getChallengeSetting,
     verifyChallenge
 };

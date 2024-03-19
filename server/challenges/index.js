@@ -3,7 +3,7 @@ const { TYPE_FUNCTION } = require('../constants/index.js');
 const { getCache } = require('../components/node-cache.js');
 const { randomString, randomNumber, randomArray, randomArrayOfObject, randomObject} = require('./random.js');
 const config =  require('../config/index.js');
-const { BROWSER_CHALLENGE_KEY, JS_CHALLENGE_KEY } = require('../constants/index.js');
+const { BROWSER_CHALLENGE_KEY, JS_CHALLENGE_KEY, SETTING_CHALLENGE_KEY } = require('../constants/index.js');
 
 const getChallenges = () => {
     let challenges = getCache(JS_CHALLENGE_KEY);
@@ -20,8 +20,10 @@ const executeChallenges = challenges =>{
 };
 
 function encodeChallenges(challenges){
-    const { NUM_CHALLENGE_IDS} = config;
-    const challengesRandom = NUM_CHALLENGE_IDS?.length > 0 ? getChallengesFromSetting(NUM_CHALLENGE_IDS.split(','), challenges) : getRandomItemsFromArray(challenges);
+    const settings = getCache(SETTING_CHALLENGE_KEY);
+    const challengesRandom = settings.challengeIds?.length > 0 ? 
+            getChallengesFromSetting( settings.challengeIds.split(','), challenges) :
+            getRandomItemsFromArray(challenges);
 
     return challengesRandom.map(chl =>{
         const { funcString, randomVal } = replaceParameterValues(chl.item.obfuscated);

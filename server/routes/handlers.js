@@ -14,7 +14,6 @@ const { NODE_ENV } = require('../config/index');
 const env = NODE_ENV === 'development' ? 'dev' : 'pro';
 
 async function getScriptChallenge(req, res, isExternal) {
-  const token = getToken();
   const rootUrl = `${req.protocol}://${req.get("host")}`;
 
   const encode = JSFuck.encode(JSON.stringify(BROWSER_CHALLENGES));

@@ -4,14 +4,14 @@ const cors = require('cors');
 
 const path = require('path');
 const { errorHandler } = require('./middleware/errorHandlingMiddleware.js');
-const { setCacheChallenges } = require('./components/startup.js');
+const { setAllCaches } = require('./components/startup.js');
 const config =  require('./config/index.js');
 
 const router = require('./routes/index.js');
 
 const app = express();
 
-setCacheChallenges();
+setAllCaches();
 
 app.enable('trust proxy');
 
@@ -28,5 +28,5 @@ app.use(express.static(path.join(__dirname, config.NODE_ENV === 'development' ? 
 app.use(errorHandler);
 
 app.listen(config.PORT, () => {
-    console.log(`Server is running on http://localhost:${config.PORT}`);
+    console.log(`Server is running on port :${config.PORT}`);
 });
