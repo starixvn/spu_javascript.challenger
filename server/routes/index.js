@@ -62,8 +62,8 @@ router.post('/f/p/orchestrate_chl/e', verifyTokenMiddleware, asyncHandler(async 
 
   if(isExternal === 'false'){
     const challengeResult = {
-      result: true,
-      errMsg: message
+      Result: true,
+      ErrMsg: message
     }
   
     await setAsync(`Challenge:${challengeId}`, JSON.stringify(challengeResult) , (err, reply) => {

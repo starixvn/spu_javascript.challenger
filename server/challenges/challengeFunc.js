@@ -32,7 +32,7 @@ const verifyChallenge = async (challengeId, challengeResult, actual, isExternal)
 
         setAsync(
             `Challenge:${challengeId}`,
-            JSON.stringify({...challengeResult, result: !isBot}), (err, reply) => {
+            JSON.stringify({...challengeResult, Result: !isBot}), (err, reply) => {
               if (err) {
                 captureException(err);
               }
