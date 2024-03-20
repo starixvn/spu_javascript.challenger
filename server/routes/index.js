@@ -62,7 +62,7 @@ router.post('/f/p/orchestrate_chl/e', verifyTokenMiddleware, asyncHandler(async 
 
   if(isExternal === 'false'){
     const challengeResult = {
-      Result: true,
+      Result: 1,
       ErrMsg: message
     }
   
