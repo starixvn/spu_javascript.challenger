@@ -6,9 +6,11 @@ const config =  require('../config/index.js');
 const { BROWSER_CHALLENGE_KEY, JS_CHALLENGE_KEY, SETTING_CHALLENGE_KEY } = require('../constants/index.js');
 
 const getChallenges = () => {
-    let challenges = getCache(JS_CHALLENGE_KEY);
+    let challenges = getCacheChallenges();
     return encodeChallenges(challenges);
 };
+
+const getCacheChallenges = () => getCache(JS_CHALLENGE_KEY);
 
 const getBrowserChallenges = () =>{
     return getCache(BROWSER_CHALLENGE_KEY);
@@ -147,6 +149,7 @@ function replaceTypeWithRandomVal(type = 'type_s'){
 
 module.exports = {
     getChallenges,
+    getCacheChallenges,
     getBrowserChallenges,
     executeChallenges,
     replaceParameterValues
