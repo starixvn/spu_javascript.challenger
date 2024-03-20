@@ -20,9 +20,9 @@ const executeChallenges = challenges =>{
 };
 
 function encodeChallenges(challenges){
-    const settings = getCache(SETTING_CHALLENGE_KEY);
-    const challengesRandom = settings.challengeIds?.length > 0 ? 
-            getChallengesFromSetting( settings.challengeIds.split(','), challenges) :
+    const settingChlIds = getCache(SETTING_CHALLENGE_KEY);
+    const challengesRandom = settingChlIds?.length > 0 ? 
+            getChallengesFromSetting(settingChlIds.split(','), challenges) :
             getRandomItemsFromArray(challenges);
 
     return challengesRandom.map(chl =>{
@@ -41,7 +41,6 @@ function encodeChallenges(challenges){
 
 function getChallengesFromSetting(settingChlIds, arr) {
     const challengesFilter = arr.filter(x => settingChlIds.includes(x.id.toString()));
-
     const challenges = challengesFilter.map(item => {
         return {
             index: item.id,

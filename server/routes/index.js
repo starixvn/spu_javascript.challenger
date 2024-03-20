@@ -3,9 +3,12 @@ const router = express.Router();
 
 const config =  require('../config/index.js');
 const { setAsync } = require('../components/redis.js');
+const { setCache } = require('../components/node-cache.js');
 const { captureException } = require('../components/sentry.js');
 
 const path = require('path');
+
+const { SETTING_CHALLENGE_KEY } = require('../constants/index.js');
 
 const { getChallenges } = require('../challenges/index.js');
 const { asyncHandler } = require('../middleware/errorHandlingMiddleware.js');
@@ -15,14 +18,6 @@ const {
   setCacheChallenge,
   handleChallengeVerification
 } = require('./handlers.js');
-
-router.get('/healthz', (req, res) => {
-  res.status(200).send(`env: ${JSON.stringify(process.env)} Date Time: ${new Date().getTime()}`);
-});
-
-router.get('/testSentry', asyncHandler(async (req, res, next) => {
-  throw new Error('testSentry');
-}));
 
 router.get('/f/p/i/orchestrate_chl', asyncHandler(async (req, res) => {
   getScriptChallenge(req, res, false);
@@ -87,5 +82,19 @@ router.get("/admin/jsChallenge", (req, res) => {
   const pathClient = config.NODE_ENV === 'development' ? "../client/build/index.html" : "/client/build/index.html"
   res.sendFile(path.join(__dirname + pathClient));
 });
+
+router.get('/healthz', (req, res) => {
+  res.status(200).send(`env: ${JSON.stringify(process.env)} Date Time: ${new Date().getTime()}`);
+});
+
+router.get('/testSentry', asyncHandler(async (req, res, next) => {
+  throw new Error('testSentry');
+}));
+
+router.get('/testCache', asyncHandler(async (req, res, next) => {
+  await setCache(SETTING_CHALLENGE_KEY, '4,6');
+
+  res.status(200).send();
+}));
 
 module.exports = router;
