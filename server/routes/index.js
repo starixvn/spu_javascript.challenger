@@ -88,7 +88,7 @@ router.get('/testSentry', asyncHandler(async (req, res, next) => {
 
 router.get('/setChallenge/:chlId', asyncHandler(async (req, res, next) => {
   const chlId = req.params.chlId;
-  await setCache(SETTING_CHALLENGE_KEY, chlId);
+  await setCache(SETTING_CHALLENGE_KEY, chlId.replace(/\s/g, ''));
   res.status(200).send();
 }));
 

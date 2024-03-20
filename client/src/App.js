@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Input, Button, Table } from 'antd'; // Assuming you want to use Ant Design Table
 import axios from 'axios';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import './App.css'
 
 function App() {
@@ -29,10 +31,16 @@ function App() {
 
   const handleSetChallenge = async () =>{
     try {
-      await axios.get(url + '/setChallenge/' + chlId);
-      console.log('Successfully set challenge');
+      if(chlId.length > 0){
+        await axios.get(url + '/setChallenge/' + chlId);
+        setChlId('');
+        toast.success('Successfully set challenge !!!');
+      }else{
+        toast.error('Please input challengeId !!!');
+      }
+      
     } catch (error) {
-      console.error('Error setting challenge:', error);
+      toast.error('Error setting challenge:', error)
     }
   }
 
@@ -41,16 +49,20 @@ function App() {
       title: 'ID',
       dataIndex: 'id',
       key: 'id',
+      width: 20,
     },
     {
       title: 'Function',
       dataIndex: 'func',
       key: 'func',
+      width: 100,
     },
     {
       title: 'Obfuscated',
       dataIndex: 'obfuscated',
       key: 'obfuscated',
+      ellipsis: true,
+      width: 150,
     },
   ];
 
@@ -58,21 +70,20 @@ function App() {
     <div className="App">
       <header className="App-header">
         <div className='js-chl-setting'>
-          <h1>Js Challenge</h1>
-          <label>
-            Challenge Id: 
-            <Input type="text" name="chlId" placeholder="1,2,3" value={chlId} onChange={handleChlIdChange}/>
-          </label>
+          <label>Challenge Id:</label>
+          <Input type="text" name="chlId" placeholder="1,2,3" value={chlId} onChange={handleChlIdChange}/>
+
           <Button type="primary" block onClick={handleSetChallenge}>
             Set Challenge
           </Button>
         </div>
         
         <div className='data-table'>
-          <h2 style={{float:'left'}}>Challenges</h2>
+          <h5 style={{float:'left'}}>Challenges</h5>
           <Table dataSource={data} columns={columns} />
         </div>
       </header>
+      <ToastContainer />
     </div>
   );
 }
