@@ -28,5 +28,5 @@ app.use(express.static(path.join(__dirname, config.NODE_ENV === 'development' ? 
 app.use(errorHandler);
 
 app.listen(config.PORT, () => {
-    console.log(`Server is running on port :${config.PORT}`);
+    console.log(`Server is running on port ${config.PORT}`);
 });

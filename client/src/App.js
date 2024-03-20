@@ -1,55 +1,39 @@
-import React, { useState, useEffect } from "react";
-import logo from "./react-logo.svg";
-import nodejsLogo from "./nodejs-logo.svg";
-import "./App.css";
+import React, { useState } from 'react';
+import { Input, Button } from 'antd';
+import axios from 'axios';
+import './App.css'
 
 function App() {
+  const [chlId, setChlId] = useState("");
+
+  const handleChlIdChange = (event) => {
+    setChlId(event.target.value);
+  };
+
+  const handleSetChallenge = async () =>{
+    await axios.get('/setChallenge/' + chlId)
+    .then(response => {
+      console.log('Successfully set challenge');
+    })
+    .catch(error => {
+      console.error('Error setting challenge:', error);
+    });
+  }
+
   return (
     <div className="App">
       <header className="App-header">
-        <h1>Js Challenge</h1>
-        <div className="logo-box">
-          <img src={logo} className="App-logo" alt="logo" />
-          <img src={nodejsLogo} className="Node-logo" alt="nodejsLogo" />
+        <div className='js-chl-setting'>
+          <h1>Js Challenge</h1>
+          <label>
+            Challenge Id: 
+            <Input type="text" name="chlId" placeholder="1,2,3" value={chlId} onChange={handleChlIdChange}/>
+          </label>
+          <Button type="primary" block onClick={handleSetChallenge}>
+            Set Challenge
+          </Button>
         </div>
-        <p>
-          Edit <code>client/src/App.js</code> and save to reload React app.
-        </p>
-        <p>
-          Edit <code>client/server/routes/api.js</code> and save to reload
-          Node.js app.
-        </p>
-        <br />
-        <br />
-        <p>
-          Docs:{" "}
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            React
-          </a>
-          {" | "}
-          <a
-            className="App-link"
-            href="https://nodejs.org/en/docs/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Node.js
-          </a>
-          {" | "}
-          <a
-            className="App-link"
-            href="https://expressjs.com/en/4x/api.html"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Express.js
-          </a>
-        </p>
+        
       </header>
     </div>
   );

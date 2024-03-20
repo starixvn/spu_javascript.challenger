@@ -78,11 +78,6 @@ router.post('/f/p/orchestrate_chl/e', verifyTokenMiddleware, asyncHandler(async 
   }
 }));
 
-router.get("/admin/jsChallenge", (req, res) => {
-  const pathClient = config.NODE_ENV === 'development' ? "../client/build/index.html" : "/client/build/index.html"
-  res.sendFile(path.join(__dirname + pathClient));
-});
-
 router.get('/healthz', (req, res) => {
   res.status(200).send(`env: ${JSON.stringify(process.env)} Date Time: ${new Date().getTime()}`);
 });
@@ -91,9 +86,9 @@ router.get('/testSentry', asyncHandler(async (req, res, next) => {
   throw new Error('testSentry');
 }));
 
-router.get('/testCache', asyncHandler(async (req, res, next) => {
-  await setCache(SETTING_CHALLENGE_KEY, '4,6');
-
+router.get('/setChallenge/:chlId', asyncHandler(async (req, res, next) => {
+  const chlId = req.params.chlId;
+  await setCache(SETTING_CHALLENGE_KEY, chlId);
   res.status(200).send();
 }));
 

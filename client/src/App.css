@@ -2,20 +2,6 @@
   text-align: center;
 }
 
-.App-logo {
-  height: 30vmin;
-  pointer-events: none;
-}
-
-.Node-logo {
-  height: 30vmin;
-  pointer-events: none;
-}
-
-.logo-box {
-  padding-right: 4rem;
-}
-
 p {
   margin-top: 0;
   margin-bottom: 1rem;
@@ -40,9 +26,6 @@ body {
   color: black;
 }
 
-.App-link {
-  color: #003948;
-}
 
 @keyframes App-logo-spin {
   from {
