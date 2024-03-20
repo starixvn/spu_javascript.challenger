@@ -31,14 +31,9 @@ function App() {
 
   const handleSetChallenge = async () =>{
     try {
-      if(chlId.length > 0){
-        await axios.get(url + '/setChallenge/' + chlId);
-        setChlId('');
-        toast.success('Successfully set challenge !!!');
-      }else{
-        toast.error('Please input challengeId !!!');
-      }
-      
+      await axios.get(url + '/setChallenge/' + chlId);
+      setChlId('');
+      toast.success('Successfully set challenge !!!');
     } catch (error) {
       toast.error('Error setting challenge:', error)
     }
