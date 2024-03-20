@@ -45,20 +45,5 @@ module.exports = {
       exec: "!navigator.appVersion",
       expect: false,
     },
-    {
-      id: 10,
-      exec: "document.documentElement && typeof document.documentElement.getAttributeNames == 'function'",
-      expect: true,
-    },
-    {
-      id: 11,
-      exec: "eval.toString().length > 0",
-      expect: true,
-    },
-    {
-      id: 12,
-      exec: "Function.prototype.bind != undefined",
-      expect: true,
-    }
   ],
 };

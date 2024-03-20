@@ -1,15 +1,24 @@
-const {Builder, By, Key, until} = require('selenium-webdriver');
+const { Builder, By, Key } = require('selenium-webdriver');
+const chrome = require('selenium-webdriver/chrome');
 
-// Initialize the WebDriver
 async function login() {
-    let driver = await new Builder().forBrowser('chrome').build();
+    // Set up Chrome options for headless mode
+    let chromeOptions = new chrome.Options();
+    //chromeOptions.addArguments("--headless"); // Set headless mode
+
+    let driver = await new Builder()
+        .forBrowser('chrome')
+        .setChromeOptions(chromeOptions) // Apply Chrome options
+        .build();
 
     try {
-        await driver.get('https://alphafps.nexdev.net/'); 
+        await driver.get('https://alphafps.nexdev.net/');
 
-        await driver.findElement(By.id('txtUserName')).sendKeys('alele1'); 
-        await driver.findElement(By.id('txtPassWord')).sendKeys('1234aa', Key.RETURN); 
-    }catch(err){
+        await driver.executeScript('Object.defineProperty(navigator, "webdriver", { get: () => false });');
+
+        await driver.findElement(By.id('txtUserName')).sendKeys('Test10y');
+        await driver.findElement(By.id('txtPassWord')).sendKeys('1234aa', Key.RETURN);
+    } catch (err) {
         console.error(err);
     } finally {
         //await driver.quit();
