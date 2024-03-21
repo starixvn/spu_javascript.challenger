@@ -1,16 +1,10 @@
 const express = require("express");
 const router = express.Router();
 
-const config =  require('../config/index.js');
 const { setAsync } = require('../components/redis.js');
-const { setCache } = require('../components/node-cache.js');
 const { captureException } = require('../components/sentry.js');
 
-const path = require('path');
-
-const { SETTING_CHALLENGE_KEY } = require('../constants/index.js');
-
-const { getChallenges, getCacheChallenges } = require('../challenges/index.js');
+const { getChallenges } = require('../challenges/index.js');
 const { asyncHandler } = require('../middleware/errorHandlingMiddleware.js');
 const { verifyTokenMiddleware } = require('../middleware/jwtTokenMiddleware.js');
 const {
@@ -84,17 +78,6 @@ router.get('/healthz', (req, res) => {
 
 router.get('/testSentry', asyncHandler(async (req, res, next) => {
   throw new Error('testSentry');
-}));
-
-router.get('/setChallenge/:chlId?', asyncHandler(async (req, res, next) => {
-  const chlId = req.params.chlId;
-    await setCache(SETTING_CHALLENGE_KEY, chlId?.replace(/\s/g, ''));
-    res.status(200).send();
-}));
-
-router.get('/getChallenges', asyncHandler(async (req, res, next) => {
-  const data = getCacheChallenges();
-  res.json(data);
 }));
 
 module.exports = router;

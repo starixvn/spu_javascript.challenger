@@ -8,6 +8,7 @@ const { setAllCaches } = require('./components/startup.js');
 const config =  require('./config/index.js');
 
 const router = require('./routes/index.js');
+const apiRoutes = require('./routes/api.js');
 
 const app = express();
 
@@ -22,6 +23,7 @@ app.use(compression());
 app.use(express.json());
 
 app.use("/", router);
+app.use('/api', apiRoutes);
 
 app.use(express.static(path.join(__dirname, config.NODE_ENV === 'development' ? "../client/build" : "/client/build")));
 

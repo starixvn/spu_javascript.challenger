@@ -1,6 +1,6 @@
 (function (isExternal = _isExternal, browserChallenges = '_browserChallenges', rootUrl = '_rootUrl') {
   var ssk = "";
-  var tokenElement = document.getElementById("__fdi__token");
+  var tokenElement = document.getElementById("__JvsVerificationToken");
   var token = tokenElement !== null ? tokenElement.value : null;
 
   if (!isExternal) {

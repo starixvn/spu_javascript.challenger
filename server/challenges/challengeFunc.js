@@ -9,8 +9,7 @@ const getAllChallenges = async () =>{
         const data =  await fs.readFileSync(path.resolve(__dirname,'./challenges.json'), 'utf8');
         const parseData = JSON.parse(data);
         parseData.map(item =>{
-            const funcStr = `(${item.func})()`;
-            item.obfuscated = getObfuscatedCode(funcStr);
+            item.obfuscated = getObfuscatedCode(item.func);
         })
 
         return parseData;

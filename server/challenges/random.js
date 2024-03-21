@@ -1,6 +1,6 @@
-const config =  require('../config/index.js');
+const { CHALLENGE_SETTINGS } =  require('../config/index.js');
 
-const randomString = (length = config.RANDOM_LENGTH_STRING) => {
+const randomString = (length = CHALLENGE_SETTINGS.RANDOM_LENGTH_STRING) => {
     const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
     let result = '';
   
@@ -12,9 +12,9 @@ const randomString = (length = config.RANDOM_LENGTH_STRING) => {
     return result;
   }
 
-const randomNumber = (min = config.MIN, max = config.MAX) => Math.random() * (max - min) + min;
+const randomNumber = (min = CHALLENGE_SETTINGS.MIN, max = CHALLENGE_SETTINGS.MAX) => Math.random() * (max - min) + min;
 
-const randomArray = (length, min = config.MIN, max = config.MAX) => {
+const randomArray = (length, min = CHALLENGE_SETTINGS.MIN, max = CHALLENGE_SETTINGS.MAX) => {
   const randomArray = [];
   for (let i = 0; i < length; i++) {
       randomArray.push(randomNumber(min, max));

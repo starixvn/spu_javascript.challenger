@@ -1,82 +1,83 @@
 [
     { 
-        "id": 1,
-        "func": "function add(num1 = type_n, num2 = type_n) { return num1 + num2; }" 
+      "id": 1,
+      "func": "(function(num1 = type_n, num2 = type_n) { return num1 + num2; })();"
     },
     { 
-        "id": 2,
-        "func": "function minus(num1 = type_n, num2 = type_n) { return num1 - num2; }" 
+      "id": 2,
+      "func": "(function(num1 = type_n, num2 = type_n) { return num1 - num2; })();"
     },
     {
-        "id": 3,
-        "func": "function multiple(num1 = type_n, num2 = type_n) { return num1 * num2; }"
+      "id": 3,
+      "func": "(function(num1 = type_n, num2 = type_n) { return num1 * num2; })();"
     },
     {
-        "id": 4,
-        "func": "function divide(num1 = type_n, num2 = type_n) { return num1 / num2; }"
+      "id": 4,
+      "func": "(function(num1 = type_n, num2 = type_n) { return num1 / num2; })();"
     },
     {
-        "id": 5,
-        "func": "function convert(minutes = type_n) { return minutes * 60; }"
+      "id": 5,
+      "func": "(function(minutes = type_n) { return minutes * 60; })();"
     },
     {
-        "id": 6,
-        "func": "function triArea(base = type_n, height = type_n) { return (base * height) / 2; }"
+      "id": 6,
+      "func": "(function(base = type_n, height = type_n) { return (base * height) / 2; })();"
     },
     {
-        "id": 7,
-        "func": "function calcAge(ageInYears = type_n) { return ageInYears * 365; }"
+      "id": 7,
+      "func": "(function(ageInYears = type_n) { return ageInYears * 365; })();"
     },
     {
-        "id": 8,
-        "func": "function remainder(x = type_n, y = type_n) { return x % y; }"
+      "id": 8,
+      "func": "(function(x = type_n, y = type_n) { return x % y; })();"
     },
     {
-        "id": 9,
-        "func": "function getFirstValue(arr = type_a) { if (arr?.length > 0) { return arr[0]; } else { return undefined; } }"
+      "id": 9,
+      "func": "(function(arr = type_a) { if (arr?.length > 0) { return arr[0]; } else { return undefined; } })();"
     },
     {
-        "id": 10,
-        "func": "function giveMeSomething(a = type_s) { return 'something ' + a; }"
+      "id": 10,
+      "func": "(function(a = type_s) { return 'something ' + a; })();"
     },
     {
-        "id": 11,
-        "func": "function lessThanOrEqualToZero(num = type_n) { return num <= 0; }"
+      "id": 11,
+      "func": "(function(num = type_n) { return num <= 0; })();"
     },
     {
-        "id": 12,
-        "func": "function swap(a = type_n, b = type_n) { var temp = a; a = b; b = temp; return [a, b]; }"
+      "id": 12,
+      "func": "(function(a = type_n, b = type_n) { var temp = a; a = b; b = temp; return [a, b]; })();"
     },
     {
-        "id": 13,
-        "func": "function bitwiseAND(a = type_n, b = type_n) { return a & b; }"
+      "id": 13,
+      "func": "(function(a = type_n, b = type_n) { return a & b; })();"
     },
     {
-        "id": 14,
-        "func": "function bitwiseOR(a = type_n, b = type_n) { return a | b; }"
+      "id": 14,
+      "func": "(function(a = type_n, b = type_n) { return a | b; })();"
     },
     {
-        "id": 15,
-        "func": "function bitwiseXOR(a = type_n, b = type_n) { return a ^ b; }"
+      "id": 15,
+      "func": "(function(a = type_n, b = type_n) { return a ^ b; })();"
     },
     {
-        "id": 16,
-        "func": "function comp(a = type_s, b = type_s) { return a.length === b.length; }"
+      "id": 16,
+      "func": "(function(a = type_s, b = type_s) { return a.length === b.length; })();"
     },
     {
-        "id": 17,
-        "func": "function matchHouses(step = type_n) { if (step === 0) { return 0; } else { return 5 * step + 1; } }"
+      "id": 17,
+      "func": "(function(step = type_n) { if (step === 0) { return 0; } else { return 5 * step + 1; } })();"
     },
     {
-        "id": 18,
-        "func": "function shiftToLeft(x = type_n, y = type_n) { return x * Math.pow(2, y); }"
+      "id": 18,
+      "func": "(function(x = type_n, y = type_n) { return x * Math.pow(2, y); })();"
     },
     {
-        "id": 19,
-        "func": "function minMax(arr = type_a) { arr.sort((a, b) => a - b); return [arr[0], arr[arr.length - 1]]; }"
+      "id": 19,
+      "func": "(function(arr = type_a) { arr.sort((a, b) => a - b); return [arr[0], arr[arr.length - 1]]; })();"
     },
     {
-        "id": 20,
-        "func": "function binary(decimal = type_n) { if (decimal === 0) { return '0'; } let binaryString = ''; while (decimal > 0) { binaryString = (decimal % 2) + binaryString; decimal = Math.floor(decimal / 2); } return binaryString; }"
+      "id": 20,
+      "func": "(function(decimal = type_n) { if (decimal === 0) { return '0'; } let binaryString = ''; while (decimal > 0) { binaryString = (decimal % 2) + binaryString; decimal = Math.floor(decimal / 2); } return binaryString; })();"
     }
-]
+  ]
+  

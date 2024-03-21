@@ -2,7 +2,7 @@ const JSFuck = require('../components/jsfuck.js').JSFuck;
 const { TYPE_FUNCTION } = require('../constants/index.js');
 const { getCache } = require('../components/node-cache.js');
 const { randomString, randomNumber, randomArray, randomArrayOfObject, randomObject} = require('./random.js');
-const config =  require('../config/index.js');
+const { CHALLENGE_SETTINGS } =  require('../config/index.js');
 const { BROWSER_CHALLENGE_KEY, JS_CHALLENGE_KEY, SETTING_CHALLENGE_KEY } = require('../constants/index.js');
 
 const getChallenges = () => {
@@ -22,10 +22,10 @@ const executeChallenges = challenges =>{
 };
 
 function encodeChallenges(challenges){
-    const settingChlIds = getCache(SETTING_CHALLENGE_KEY);
-    const challengesRandom = settingChlIds?.length > 0 ? 
-            getChallengesFromSetting(settingChlIds.split(','), challenges) :
-            getRandomItemsFromArray(challenges);
+    const settingChallenges = getCache(SETTING_CHALLENGE_KEY);
+    const challengesRandom = settingChallenges.NUM_CHALLENGE_IDS?.length > 0 ? 
+            getChallengesFromSetting(settingChallenges.NUM_CHALLENGE_IDS.split(','), challenges) :
+            getRandomItemsFromArray(challenges, settingChallenges.RANDOM_NUM_CHALLENGES);
 
     return challengesRandom.map(chl =>{
         const { funcString, randomVal } = replaceParameterValues(chl.item.obfuscated);
@@ -53,8 +53,8 @@ function getChallengesFromSetting(settingChlIds, arr) {
     return challenges;
 }
 
-function getRandomItemsFromArray(arr) {
-    const randomIndices = getRandomIndices(arr, config.RANDOM_NUM_CHALLENGES);
+function getRandomItemsFromArray(arr, numChl) {
+    const randomIndices = getRandomIndices(arr, numChl);
     const randomItems = randomIndices.map(index => {
         return {
             index: arr[index].id,
@@ -126,13 +126,13 @@ function replaceTypeWithRandomVal(type = 'type_s'){
     const {TYPE_STRING, TYPE_NUMBER, TYPE_ARRAY, TYPE_ARRAY_OF_OBJECT, TYPE_OBJECT } = TYPE_FUNCTION;
     switch (type) {
         case TYPE_STRING:
-          val = `'${randomString(config.RANDOM_LENGTH_STRING)}'`
+          val = `'${randomString(CHALLENGE_SETTINGS.RANDOM_LENGTH_STRING)}'`
           break;
         case TYPE_NUMBER:
-          val = randomNumber(config.MIN, config.MAX)
+          val = randomNumber(CHALLENGE_SETTINGS.MIN, CHALLENGE_SETTINGS.MAX)
           break;
         case TYPE_ARRAY:
-          val = `[${randomArray(config.RANDOM_LENGTH_ARRAY, config.MIN, config.MAX)}]`
+          val = `[${randomArray(CHALLENGE_SETTINGS.RANDOM_LENGTH_ARRAY, CHALLENGE_SETTINGS.MIN, CHALLENGE_SETTINGS.MAX)}]`
           break;
         case TYPE_ARRAY_OF_OBJECT:
           val = `${randomArrayOfObject()}`
