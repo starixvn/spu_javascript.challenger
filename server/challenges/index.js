@@ -23,6 +23,7 @@ const executeChallenges = challenges =>{
 
 function encodeChallenges(challenges){
     const settingChallenges = getCache(SETTING_CHALLENGE_KEY);
+    
     const challengesRandom = settingChallenges.NUM_CHALLENGE_IDS?.length > 0 ? 
             getChallengesFromSetting(settingChallenges.NUM_CHALLENGE_IDS.split(','), challenges) :
             getRandomItemsFromArray(challenges, settingChallenges.RANDOM_NUM_CHALLENGES);

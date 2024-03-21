@@ -8,9 +8,9 @@ const { SETTING_CHALLENGE_KEY } = require('../constants/index.js');
 
 router.get('/setChallenge/:chlId?', asyncHandler(async (req, res, next) => {
   const chlId = req.params.chlId;
-  const settingChallenges = getCacheChallenges();
+  const settingChallenges = getCache(SETTING_CHALLENGE_KEY);
   const settingChallengesUpdated = {
-    ...settingChallenges, NUM_CHALLENGE_IDS: chlId
+    ...settingChallenges, NUM_CHALLENGE_IDS: chlId.replace(/\s/g, '')
   }
 
   await setCache(SETTING_CHALLENGE_KEY, settingChallengesUpdated);

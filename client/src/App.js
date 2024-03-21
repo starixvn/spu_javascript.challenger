@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import {Table, Row, Col, Input, Button, Checkbox, Form, InputNumber, Typography   } from 'antd';
+import { Table, Row, Col, Input, Button, Checkbox, Form, InputNumber } from 'antd';
 import { EditOutlined, PlayCircleOutlined  } from '@ant-design/icons';
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
@@ -189,9 +189,7 @@ function App() {
           </Col>
         </Row>
       </div>
-        
         <div className='data-table'>
-          <h5 style={{float:'left'}}>Challenges</h5>
           <Form form={form} component={false}>
             <Table
               components={{
