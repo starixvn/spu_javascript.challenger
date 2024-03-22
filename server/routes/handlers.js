@@ -25,7 +25,7 @@ async function getScriptChallenge(req, res, isExternal) {
     .replace(/_rootUrl/g, rootUrl);
 
   res.setHeader("Content-Type", "application/javascript");
-  // res.setHeader("Cache-Control", "max-age=31536000");
+  res.setHeader("Cache-Control", "max-age=31536000");
   res.send(javascriptCode);
 }
 

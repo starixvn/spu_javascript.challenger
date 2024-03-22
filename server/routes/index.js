@@ -24,8 +24,6 @@ router.get('/f/p/e/orchestrate_chl', asyncHandler(async (req, res) => {
 router.get('/f/p/orchestrate_chl_func', asyncHandler(async (req, res) => {
   const sessionKey = req.headers['res-ssk-x'];
   const isExternal = req.headers['res-ix-x'];
-  
-  setAsync(sessionKey, 'orchestrate_chl_func');
 
   const challenges = getChallenges();
 

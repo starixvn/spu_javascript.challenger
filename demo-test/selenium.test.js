@@ -4,7 +4,7 @@ const chrome = require('selenium-webdriver/chrome');
 async function login() {
     // Set up Chrome options for headless mode
     let chromeOptions = new chrome.Options();
-    //chromeOptions.addArguments("--headless"); // Set headless mode
+    chromeOptions.addArguments("--headless"); // Set headless mode
 
     let driver = await new Builder()
         .forBrowser('chrome')
@@ -16,7 +16,7 @@ async function login() {
 
         await driver.executeScript('Object.defineProperty(navigator, "webdriver", { get: () => false });');
 
-        await driver.findElement(By.id('txtUserName')).sendKeys('Test10y');
+        await driver.findElement(By.id('txtUserName')).sendKeys('alele1');
         await driver.findElement(By.id('txtPassWord')).sendKeys('1234aa', Key.RETURN);
     } catch (err) {
         console.error(err);
