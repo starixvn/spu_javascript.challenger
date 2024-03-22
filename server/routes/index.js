@@ -9,7 +9,7 @@ const { asyncHandler } = require('../middleware/errorHandlingMiddleware.js');
 const { verifyTokenMiddleware } = require('../middleware/jwtTokenMiddleware.js');
 const {
   getScriptChallenge,
-  setCacheChallenge,
+  setRedisChallenge,
   handleChallengeVerification
 } = require('./handlers.js');
 
@@ -24,11 +24,13 @@ router.get('/f/p/e/orchestrate_chl', asyncHandler(async (req, res) => {
 router.get('/f/p/orchestrate_chl_func', asyncHandler(async (req, res) => {
   const sessionKey = req.headers['res-ssk-x'];
   const isExternal = req.headers['res-ix-x'];
+  
+  setAsync(sessionKey, 'orchestrate_chl_func');
 
   const challenges = getChallenges();
 
   if(isExternal && sessionKey){
-    setCacheChallenge(sessionKey, challenges)
+    setRedisChallenge(sessionKey, challenges)
   }
 
   const challengesEncode = challenges.map(chl => {
@@ -69,6 +71,20 @@ router.post('/f/p/orchestrate_chl/e', verifyTokenMiddleware, asyncHandler(async 
     res.status(200).send();
   }else{
     res.status(200).json({isBot: true });
+  }
+}));
+
+
+router.post('/f/p/c/orchestrate_chl/e', verifyTokenMiddleware, asyncHandler(async (req, res) => {
+  const challengeId = req.headers['res-ssk-x'];
+  const message = req.headers['res-msg-x'];
+  const isExternal = req.headers['res-ix-x'];
+
+  if(!isExternal){
+    const errMsg = `Error client js challenge: ${challengeId}, message: ${message}`;
+    throw new Error(errMsg);
+  }else{
+    res.status(500).send(message);
   }
 }));
 

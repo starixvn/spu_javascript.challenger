@@ -159,37 +159,38 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-      <div className='js-chl-setting'>
-        <Row gutter={[16, 16]} align="middle" className='row-filter1'>
-          <Col flex="auto">
-            {settingChallenges !== null && settingChallenges.NUM_CHALLENGE_IDS?.length > 0 ?
-                  <label>Current Challenge Id: {settingChallenges.NUM_CHALLENGE_IDS}</label> :
-                  <label>Challenges is random</label>}
-          </Col>
-          <Col flex="auto">
-            <Input disabled={autoRandom} type="text" name="chlId" id="chlId" placeholder="1,2,3" value={chlId} onChange={handleInputChange}/>
-          </Col>
-          <Col flex="auto">
-            <Button type="primary" block onClick={handleSetChallenge} disabled={autoRandom}>
-              Set Challenge
-            </Button>
-          </Col>
-        </Row>
-        <Row gutter={[16, 16]} align="middle" className='row-filter2'>
-          <Col flex="auto">
-            <Checkbox onChange={onChangeCheckbox} checked={autoRandom}>Auto Random</Checkbox>
-          </Col>
-          <Col flex="auto">
-            <Input disabled={!autoRandom} type="number" name="numChl" id='numChl' placeholder="Number of random challenge" value={numChl} onChange={handleInputChange}/>
-          </Col>
-          <Col flex="auto">
-            <Button type="primary" block onClick={handleSetAutoRandom} disabled={!autoRandom}>
-              Set Random
-            </Button>
-          </Col>
-        </Row>
-      </div>
-        <div className='data-table'>
+        <div className='js-chl-setting'>
+          <Row gutter={[16, 16]} align="middle" className='row-filter1'>
+            <Col flex="auto">
+              {settingChallenges !== null && settingChallenges.NUM_CHALLENGE_IDS?.length > 0 ?
+                    <label>Current Challenge Id: {settingChallenges.NUM_CHALLENGE_IDS}</label> :
+                    <label>Challenges is random</label>}
+            </Col>
+            <Col flex="auto">
+              <Input disabled={autoRandom} type="text" name="chlId" id="chlId" placeholder="1,2,3" value={chlId} onChange={handleInputChange}/>
+            </Col>
+            <Col flex="auto">
+              <Button type="primary" block onClick={handleSetChallenge} disabled={autoRandom}>
+                Set Challenge
+              </Button>
+            </Col>
+          </Row>
+          <Row gutter={[16, 16]} align="middle" className='row-filter2'>
+            <Col flex="auto">
+              <Checkbox onChange={onChangeCheckbox} checked={autoRandom}>Auto Random</Checkbox>
+            </Col>
+            <Col flex="auto">
+              <Input disabled={!autoRandom} type="number" name="numChl" id='numChl' placeholder="Number of random challenge" value={numChl} onChange={handleInputChange}/>
+            </Col>
+            <Col flex="auto">
+              <Button type="primary" block onClick={handleSetAutoRandom} disabled={!autoRandom}>
+                Set Random
+              </Button>
+            </Col>
+          </Row>
+        </div>
+      </header>
+      <div className='data-table'>
           <Form form={form} component={false}>
             <Table
               components={{
@@ -212,7 +213,6 @@ function App() {
             />
           </Form>
         </div>
-      </header>
       <ToastContainer position='top-center'/>
     </div>
   );
