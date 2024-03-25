@@ -27,11 +27,11 @@ const verifyChallenge = async (challengeId, challengeResult, actual, isExternal)
         const rule2 = timeExeChlServer < 2000; // milliseconds
         const rule3 = timeExeChlClient < 2000; // milliseconds
 
-        const isBot = !rule1 || !rule2 || !rule3;
+        const isBot = !(rule1 && rule2 && rule3);
 
         setAsync(
             `Challenge:${challengeId}`,
-            JSON.stringify({...challengeResult, Result: Number(!isBot)}), (err, reply) => {
+            JSON.stringify({...challengeResult, Result: Number(isBot)}), (err, reply) => {
               if (err) {
                 captureException(err);
               }
