@@ -20,7 +20,7 @@ const getAllChallenges = async () =>{
 }
 
 const verifyChallenge = async (challengeId, challengeResult, actual, isExternal) =>{
-    const {expect, timeExeChlServer, timeExeChlClient} = challengeResult;
+    const {expect, timeExeChlServer, timeExeChlClient, challengeIds, parameters} = challengeResult;
   
     if (!isExternal) {
         const rule1 = expect === actual;
@@ -29,9 +29,19 @@ const verifyChallenge = async (challengeId, challengeResult, actual, isExternal)
 
         const isBot = !(rule1 && rule2 && rule3);
 
+        const challengeResultFinal = {
+            ChallengeIds: challengeIds,
+            Parameters: parameters,
+            Expect: expect,
+            Actual: actual,
+            ExeServerTimeInSecond: timeExeChlServer,
+            ExeClientTimeInSecond: timeExeChlClient,
+            Result: Number(isBot)
+        };
+
         setAsync(
             `Challenge:${challengeId}`,
-            JSON.stringify({...challengeResult, Result: Number(isBot)}), (err, reply) => {
+            JSON.stringify(challengeResultFinal), (err, reply) => {
               if (err) {
                 captureException(err);
               }

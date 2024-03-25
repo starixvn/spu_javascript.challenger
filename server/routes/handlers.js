@@ -23,7 +23,7 @@ async function getScriptChallenge(req, res, isExternal) {
     .replace(/_isExternal/g, isExternal)
     .replace(/_browserChallenges/g, encode)
     .replace(/_rootUrl/g, rootUrl);
-    
+
   res.setHeader("Content-Type", "application/javascript");
   res.setHeader("Cache-Control", "max-age=31536000");
   res.send(javascriptCode);
@@ -66,12 +66,12 @@ async function handleChallengeVerification(req, res, isExternal) {
   const actual = atob(requestData);
 
   const challengeResult = {
-    ChallengeIds: ChallengeIds,
-    Parameters: Parameters,
-    Expect: Expected,
-    Actual: actual,
-    ExeServerTimeInSecond: new Date().getTime() - TimeChl,
-    ExeClientTimeInSecond: req.headers["res-aet-x"] - req.headers["res-bet-x"],
+    challengeIds: ChallengeIds,
+    parameters: Parameters,
+    expect: Expected,
+    actual: actual,
+    timeExeChlServer: new Date().getTime() - TimeChl,
+    timeExeChlClient: req.headers["res-aet-x"] - req.headers["res-bet-x"],
   };
 
   const isBot = await verifyChallenge(challengeId, challengeResult, actual, isExternal);
