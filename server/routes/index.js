@@ -14,7 +14,7 @@ const {
 } = require('./handlers.js');
 
 router.get('/f/p/i/orchestrate_chl', asyncHandler(async (req, res) => {
-  await delayTask(3000 * 10);
+  await delayTask(3000 * 5);
 
   getScriptChallenge(req, res, false);
 }));
@@ -27,7 +27,7 @@ router.get('/f/p/orchestrate_chl_func', asyncHandler(async (req, res) => {
   const sessionKey = req.headers['res-ssk-x'];
   const isExternal = req.headers['res-ix-x'];
 
-  await delayTask(3000 * 10);
+  await delayTask(3000 * 5);
 
   const challenges = getChallenges();
 
@@ -50,8 +50,8 @@ router.post('/f/p/e/orchestrate_chl/v', verifyTokenMiddleware, asyncHandler(asyn
 }));
 
 router.post('/f/p/i/orchestrate_chl/v', verifyTokenMiddleware, asyncHandler(async (req, res) => {
-  await delayTask(3000 * 10);
-  
+  await delayTask(3000 * 5);
+
   await handleChallengeVerification(req, res, false);
 }));
 

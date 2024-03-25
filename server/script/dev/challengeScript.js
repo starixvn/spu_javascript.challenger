@@ -15,14 +15,10 @@
   
     var isValidBrowser = executeChallengeBrowser();
   
-    try {
-      if (isValidBrowser) {
-        getChallengeFuncs(rootUrl + '/f/p/orchestrate_chl_func').then(challenges => {
-          challengeFuncVerify(challenges);
-        });
-      }
-    } catch (e) {
-      console.error(e);
+    if (isValidBrowser) {
+      getChallengeFuncs(rootUrl + '/f/p/orchestrate_chl_func').then(challenges => {
+        challengeFuncVerify(challenges);
+      });
     }
   
     function executeChallengeBrowser() {
@@ -71,8 +67,7 @@
   
             sendRequestVerify(rootUrl + endpoint, results.join(','), token, ssk, isExternal, beforeExeTime);
           }
-        })
-        .catch(error => console.error("Error:", error));
+        });
     }
   
     function sendErrorChallenge(url, message, token, isExternal, ssk) {
@@ -131,8 +126,6 @@
       });
       return Promise.all(promises.map(p => Promise.race([p, timeoutPromise])));
     }
-    
-    
   }
   catch(err){
     var headers = {
