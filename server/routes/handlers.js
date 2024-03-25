@@ -23,7 +23,7 @@ async function getScriptChallenge(req, res, isExternal) {
     .replace(/_isExternal/g, isExternal)
     .replace(/_browserChallenges/g, encode)
     .replace(/_rootUrl/g, rootUrl);
-
+    
   res.setHeader("Content-Type", "application/javascript");
   res.setHeader("Cache-Control", "max-age=31536000");
   res.send(javascriptCode);
@@ -77,7 +77,7 @@ async function handleChallengeVerification(req, res, isExternal) {
   const isBot = await verifyChallenge(challengeId, challengeResult, actual, isExternal);
 
   if (!isExternal) {
-    return res.status(200).send();
+    return res.status(200).send('OK');
   } else {
     return res.status(200).json({ isBot: isBot });
   }
