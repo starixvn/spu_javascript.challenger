@@ -84,7 +84,6 @@
     
     function getChallengeFuncs(url) {
         var headers = {
-            'Res-IX-X': isExternal,
             'Res-SSK-X': ssk
           };
       return sendXHRWithPromise(url, "GET", headers);
