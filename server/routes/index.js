@@ -1,6 +1,8 @@
 const express = require("express");
 const router = express.Router();
 
+const crypto = require('crypto');
+
 const { setAsync } = require('../components/redis.js');
 const { captureException } = require('../components/sentry.js');
 
@@ -23,11 +25,28 @@ router.get('/f/p/e/orchestrate_chl', asyncHandler(async (req, res) => {
 
 router.get('/f/p/orchestrate_chl_func', asyncHandler(async (req, res) => {
   const sessionKey = req.headers['res-ssk-x'];
-  const isExternal = req.headers['res-ix-x'];
+  const challenges = getChallenges();
+
+  if(sessionKey){
+    setRedisChallenge(sessionKey, challenges)
+  }
+
+  const challengesEncode = challenges.map(chl => {
+    return {
+      id: chl.id,
+      encode: chl.encode
+    }
+  });
+
+  res.status(200).send(challengesEncode);
+}));
+
+router.get('/f/p/orchestrate_chl_func_test', asyncHandler(async (req, res) => {
+  const sessionKey = crypto.randomUUID();
 
   const challenges = getChallenges();
 
-  if(isExternal && sessionKey){
+  if(sessionKey){
     setRedisChallenge(sessionKey, challenges)
   }
 

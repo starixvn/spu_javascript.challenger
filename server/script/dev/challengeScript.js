@@ -126,6 +126,13 @@
       });
       return Promise.all(promises.map(p => Promise.race([p, timeoutPromise])));
     }
+
+    function uuid() {
+      return ('10000000100040008000100000000000').replace(/[018]/g, c => (
+          c ^ (window.crypto.getRandomValues(new Uint8Array(1))[0] & (15 >> (c / 4)))).toString(16)
+      );
+    };
+
   }
   catch(err){
     var headers = {
