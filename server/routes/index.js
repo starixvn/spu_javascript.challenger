@@ -6,12 +6,13 @@ const crypto = require('crypto');
 const { setAsync } = require('../components/redis.js');
 const { captureException } = require('../components/sentry.js');
 
-const { getChallenges } = require('../challenges/index.js');
+const { getChallenges, getCacheChallenges } = require('../challenges/index.js');
 const { asyncHandler } = require('../middleware/errorHandlingMiddleware.js');
 const { verifyTokenMiddleware } = require('../middleware/jwtTokenMiddleware.js');
 const {
   getScriptChallenge,
   setRedisChallenge,
+  setRedisChallengeTest,
   handleChallengeVerification
 } = require('./handlers.js');
 
@@ -44,10 +45,10 @@ router.get('/f/p/orchestrate_chl_func', asyncHandler(async (req, res) => {
 router.get('/f/p/orchestrate_chl_func_test', asyncHandler(async (req, res) => {
   const sessionKey = crypto.randomUUID();
 
-  const challenges = getChallenges();
+  const challenges = getCacheChallenges();
 
   if(sessionKey){
-    setRedisChallenge(sessionKey, challenges)
+    setRedisChallengeTest(sessionKey, challenges)
   }
 
   const challengesEncode = challenges.map(chl => {

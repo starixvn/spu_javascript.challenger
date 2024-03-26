@@ -3,13 +3,16 @@ const path = require('path');
 const { getObfuscatedCode } = require('../components/jsObfuscator');
 const { setAsync } = require("../components/redis.js");
 const { captureException } = require("../components/sentry.js");
+const JSFuck = require('../components/jsfuck.js').JSFuck;
 
 const getAllChallenges = async () =>{
     try{
         const data =  await fs.readFileSync(path.resolve(__dirname,'./challenges.json'), 'utf8');
         const parseData = JSON.parse(data);
         parseData.map(item =>{
-            item.obfuscated = getObfuscatedCode(item.func);
+            const obfuscatedCode = getObfuscatedCode(item.func)
+            item.obfuscated = obfuscatedCode;
+            item.encode = JSFuck.encode(obfuscatedCode)
         })
 
         return parseData;

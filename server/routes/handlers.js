@@ -46,6 +46,26 @@ async function setRedisChallenge(sessionKey, challenges) {
   })
 } 
 
+async function setRedisChallengeTest(sessionKey, challenges) {
+  // const challengeExpected = executeChallenges(challenges);
+  // console.log(challengeExpected);
+
+  const parseJson = JSON.stringify({
+    ChallengeIds: challenges.map((x) => x.id).join(","),
+    // Parameters: challenges.map((x) => x.randomVal).join(", "),
+    //Expected: challengeExpected,
+    TimeChl: new Date().getTime(),
+  });
+
+  console.log(sessionKey);
+
+  setAsync(`Challenge:${sessionKey}`, parseJson, (err, reply) => {
+    if (err) {
+      captureException(err);
+    }
+  })
+} 
+
 async function handleChallengeVerification(req, res, isExternal) {
   const challengeId = req.headers["res-ssk-x"];
   const requestData = req.headers["res-dt-x"];
@@ -95,5 +115,6 @@ const getToken = () => {
 module.exports = {
     getScriptChallenge,
     setRedisChallenge,
+    setRedisChallengeTest,
     handleChallengeVerification
 }
