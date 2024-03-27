@@ -6,9 +6,11 @@ const crypto = require('crypto');
 const { setAsync } = require('../components/redis.js');
 const { captureException } = require('../components/sentry.js');
 
-const { getChallenges, getCacheChallenges } = require('../challenges/index.js');
+const { getChallenges } = require('../challenges/index.js');
 const { asyncHandler } = require('../middleware/errorHandlingMiddleware.js');
 const { verifyTokenMiddleware } = require('../middleware/jwtTokenMiddleware.js');
+const { rateLimit } = require('../middleware/rateLimitingMiddleware.js');
+
 const {
   getScriptChallenge,
   setRedisChallenge,
@@ -16,15 +18,15 @@ const {
   handleChallengeVerification
 } = require('./handlers.js');
 
-router.get('/f/p/i/orchestrate_chl', asyncHandler(async (req, res) => {
+router.get('/f/p/i/orchestrate_chl', rateLimit, asyncHandler(async (req, res) => {
   getScriptChallenge(req, res, false);
 }));
 
-router.get('/f/p/e/orchestrate_chl', asyncHandler(async (req, res) => {
+router.get('/f/p/e/orchestrate_chl', rateLimit, asyncHandler(async (req, res) => {
   getScriptChallenge(req, res, true);
 }));
 
-router.get('/f/p/orchestrate_chl_func', asyncHandler(async (req, res) => {
+router.get('/f/p/orchestrate_chl_func', rateLimit, asyncHandler(async (req, res) => {
   const sessionKey = req.headers['res-ssk-x'];
   const challenges = getChallenges();
 
@@ -61,15 +63,15 @@ router.get('/f/p/orchestrate_chl_func_test', asyncHandler(async (req, res) => {
   res.status(200).send(challengesEncode);
 }));
 
-router.post('/f/p/e/orchestrate_chl/v', verifyTokenMiddleware, asyncHandler(async (req, res) => {
+router.post('/f/p/e/orchestrate_chl/v', rateLimit, verifyTokenMiddleware, asyncHandler(async (req, res) => {
   await handleChallengeVerification(req, res, true);
 }));
 
-router.post('/f/p/i/orchestrate_chl/v', verifyTokenMiddleware, asyncHandler(async (req, res) => {
+router.post('/f/p/i/orchestrate_chl/v', rateLimit, verifyTokenMiddleware, asyncHandler(async (req, res) => {
   await handleChallengeVerification(req, res, false);
 }));
 
-router.post('/f/p/orchestrate_chl/e', verifyTokenMiddleware, asyncHandler(async (req, res) => {
+router.post('/f/p/orchestrate_chl/e', rateLimit, verifyTokenMiddleware, asyncHandler(async (req, res) => {
   const challengeId = req.headers['res-ssk-x'];
   const message = req.headers['res-msg-x'];
   const isExternal = req.headers['res-ix-x'];
@@ -92,7 +94,7 @@ router.post('/f/p/orchestrate_chl/e', verifyTokenMiddleware, asyncHandler(async 
   }
 }));
 
-router.post('/f/p/c/orchestrate_chl/e', verifyTokenMiddleware, asyncHandler(async (req, res) => {
+router.post('/f/p/c/orchestrate_chl/e', rateLimit, verifyTokenMiddleware, asyncHandler(async (req, res) => {
   const challengeId = req.headers['res-ssk-x'];
   const message = req.headers['res-msg-x'];
   const isExternal = req.headers['res-ix-x'];

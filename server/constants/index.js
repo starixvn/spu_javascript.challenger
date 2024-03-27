@@ -8,5 +8,7 @@ module.exports = {
   },
   BROWSER_CHALLENGE_KEY: 'browser-challenge-key',
   JS_CHALLENGE_KEY: 'js-challenge-key',
-  SETTING_CHALLENGE_KEY: 'setting_challenge-key'
+  SETTING_CHALLENGE_KEY: 'setting_challenge-key',
+  RATE_LIMIT_REQUEST: 150,
+  RATE_LIMIT_TIMEOUT: 5000 //seconds
 };
