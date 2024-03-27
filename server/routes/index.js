@@ -45,7 +45,7 @@ router.get('/f/p/orchestrate_chl_func', asyncHandler(async (req, res) => {
 router.get('/f/p/orchestrate_chl_func_test', asyncHandler(async (req, res) => {
   const sessionKey = crypto.randomUUID();
 
-  const challenges = getCacheChallenges();
+  const challenges = getChallenges();
 
   if(sessionKey){
     setRedisChallengeTest(sessionKey, challenges)

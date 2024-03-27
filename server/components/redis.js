@@ -1,4 +1,6 @@
 const redis = require('redis');
+const { captureException } = require("./sentry.js");
+
 const {REDIS_HOST, REDIS_PORT, REDIS_DATABASE, REDIS_EXPIRES, REDIS_PASSWORD} =  require('../config/index.js');
 
 let redisClient = createClient();
@@ -10,15 +12,12 @@ let redisClient = createClient();
     .connect();
 })(); 
 
-async function setAsync(key, value, callback, ex = REDIS_EXPIRES) {
-  redisClient.set(key, value, {EX: ex}, (err, reply) => {
-    if (err) {
-      callback(err, null);
-    } else {
-      callback(null, reply);
-    }
-    redisClient.disconnect();
-  });
+async function setAsync(key, value, ex = REDIS_EXPIRES) {
+  try{
+    redisClient.set(key, value, {EX: ex});
+  }catch(err){
+    captureException(err.message);
+  }
 }
 
 async function getAsync(key) {

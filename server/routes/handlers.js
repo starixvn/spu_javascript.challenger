@@ -5,7 +5,6 @@ const fs = require('node:fs');
 const path = require('path');
 
 const { executeChallenges } = require("../challenges/index.js");
-const { captureException } = require("../components/sentry.js");
 const config = require('../config/index.js');
 const { verifyChallenge  } = require('../challenges/challengeFunc.js');
 const JSFuck = require('../components/jsfuck.js').JSFuck;
@@ -39,31 +38,20 @@ async function setRedisChallenge(sessionKey, challenges) {
     TimeChl: new Date().getTime(),
   });
 
-  setAsync(`Challenge:${sessionKey}`, parseJson, (err, reply) => {
-    if (err) {
-      captureException(err);
-    }
-  })
+  setAsync(`Challenge:${sessionKey}`, parseJson);
 } 
 
 async function setRedisChallengeTest(sessionKey, challenges) {
-  // const challengeExpected = executeChallenges(challenges);
-  // console.log(challengeExpected);
+  const challengeExpected = executeChallenges(challenges);
 
   const parseJson = JSON.stringify({
     ChallengeIds: challenges.map((x) => x.id).join(","),
-    // Parameters: challenges.map((x) => x.randomVal).join(", "),
-    //Expected: challengeExpected,
+    Parameters: challenges.map((x) => x.randomVal).join(", "),
+    Expected: challengeExpected,
     TimeChl: new Date().getTime(),
   });
 
-  console.log(sessionKey);
-
-  setAsync(`Challenge:${sessionKey}`, parseJson, (err, reply) => {
-    if (err) {
-      captureException(err);
-    }
-  })
+  setAsync(`Challenge:${sessionKey}`, parseJson)
 } 
 
 async function handleChallengeVerification(req, res, isExternal) {
