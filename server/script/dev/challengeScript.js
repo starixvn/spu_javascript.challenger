@@ -108,7 +108,7 @@
     function executeChallengeFunc(challenge) {
       return new Promise((resolve, reject) => {
         try {
-          var result = eval(eval(challenge.encode));
+          var result = eval(challenge.encode);
           resolve(result);
         } catch (error) {
           resolve(null);

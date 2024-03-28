@@ -17,7 +17,7 @@ const getBrowserChallenges = () =>{
 }
 
 const executeChallenges = challenges =>{
-    const expected = challenges.map(chl => eval(eval(chl.encode)));
+    const expected = challenges.map(chl => eval(chl.encode));
     return expected?.join(',');
 };
 
@@ -32,11 +32,10 @@ function encodeChallenges(challenges){
         const { funcString, randomVal } = replaceParameterValues(chl.item.obfuscated);
 
         const randomValJoin = randomVal.map(random => random).join(':');
-        const encode = JSFuck.encode(funcString);
 
         return {
             id: chl.index,
-            encode: encode,
+            encode: funcString,
             randomVal: randomValJoin
         }
     });
