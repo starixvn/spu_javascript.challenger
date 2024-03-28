@@ -112,8 +112,6 @@
           resolve(result);
         } catch (error) {
           resolve(null);
-          console.error("Error encode:", challenge.encode);
-          console.error("Error id:", challenge.id);
           console.error("Error:", error);
         }
       });

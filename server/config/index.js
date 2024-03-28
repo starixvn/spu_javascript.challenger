@@ -29,6 +29,7 @@ module.exports = {
         MAX: process.env['MAX_RANDOM_NUMBER'],
     
         RANDOM_LENGTH_STRING: process.env['RANDOM_LENGTH_STRING'],
-        RANDOM_LENGTH_ARRAY: process.env['RANDOM_LENGTH_ARRAY']
+        RANDOM_LENGTH_ARRAY: process.env['RANDOM_LENGTH_ARRAY'],
+        RANDOM_LENGTH_OBJECT: process.env['RANDOM_LENGTH_OBJECT']
     }
 }

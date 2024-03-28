@@ -22,9 +22,31 @@ const randomArray = (length, min = CHALLENGE_SETTINGS.MIN, max = CHALLENGE_SETTI
   return randomArray;
 };
 
-const randomArrayOfObject = () => `[{name: 'foo', value: ' 123'}]`;
+const randomObject = (size = CHALLENGE_SETTINGS.RANDOM_LENGTH_OBJECT) => {
+  const obj = {};
+  const characters = 'abcdefghijklmnopqrstuvwxyz';
+  const stringLength = 5;
+  
+  for (let i = 0; i < size; i++) {
+      let key = '';
+      for (let j = 0; j < stringLength; j++) {
+          key += characters.charAt(Math.floor(Math.random() * characters.length));
+      }
+      obj[key] = generateRandomString(stringLength);
+  }
+  return obj;
+}
 
-const randomObject = () => `{name: 'foo', value: ' 123'}`;
+const generateRandomString = length => {
+  let result = '';
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  for (let i = 0; i < length; i++) {
+      result += characters.charAt(Math.floor(Math.random() * characters.length));
+  }
+  return result;
+}
+
+const randomArrayOfObject = () => `[{name: 'foo', value: ' 123'}]`;
 
 module.exports = {
     randomString,

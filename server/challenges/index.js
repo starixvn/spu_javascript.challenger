@@ -138,7 +138,7 @@ function replaceTypeWithRandomVal(type = 'type_s'){
           val = `${randomArrayOfObject()}`
           break;
         case TYPE_OBJECT:
-          val = `${randomObject()}`
+          val = JSON.stringify(randomObject(CHALLENGE_SETTINGS.RANDOM_LENGTH_OBJECT))
           break;
         default:
           val = `'${randomString(RANDOM_LENGTH_STRING)}'`

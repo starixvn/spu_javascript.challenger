@@ -1,7 +1,8 @@
 [
     {
       "id": 1,
-      "func": "(function(base = type_n, height = type_n) { return (base * height) / 2; })();"
+      "func": "(function(x = type_n, y = type_n, width = type_n, height = type_n) { return `[x=${x}, y=${y}, width=${width}, height=${height}]`; })();"
+
     },
     {
       "id": 2,
@@ -13,7 +14,7 @@
     },
     {
       "id": 4,
-      "func": "(function(a = type_n, b = type_n) { var temp = a; a = b; b = temp; return [a, b]; })();"
+      "func": "(function(num = type_n) { var numStr = num.toString(); var result = ''; for (var i = 0; i < numStr.length; i++) { var digit = parseInt(numStr[i]); result += (digit * digit).toString(); } return parseInt(result); })();"
     },
     {
       "id": 5,
@@ -21,7 +22,7 @@
     },
     {
       "id": 6,
-      "func": "(function(step = type_n) { if (step === 0) { return 0; } else { return 5 * step + 1; } })();"
+      "func": "(function(obj = type_oj) { return Object.entries(obj).map(([key, value]) => [key, value]); })();"
     },
     {
       "id": 7,
