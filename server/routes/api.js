@@ -29,7 +29,8 @@ router.get('/setNumberRandomChallenge/:numChl?', asyncHandler(async (req, res, n
 
 router.get('/getChallenges', asyncHandler(async (req, res, next) => {
   const data = getCacheChallenges();
-  res.json(data);
+  const sortData = data.sort((a, b) => b.id - a.id);
+  res.json(sortData);
 }));
 
 router.get('/getSettingChallenges', asyncHandler(async (req, res, next) => {

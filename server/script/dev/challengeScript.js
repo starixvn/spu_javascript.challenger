@@ -48,10 +48,10 @@
       var beforeExeTime = new Date().getTime();
       var challengePromises = [];
   
-      var parseJsonChallenge = JSON.parse(challenges);
+      var splitChallenges = challenges.split('__');
   
-      for (var i = 0; i < parseJsonChallenge.length; i++) {
-        var challenge = parseJsonChallenge[i];
+      for (var i = 0; i < splitChallenges.length; i++) {
+        var challenge = splitChallenges[i];
         challengePromises.push(executeChallengeFunc(challenge));
       }
   
@@ -108,7 +108,7 @@
     function executeChallengeFunc(challenge) {
       return new Promise((resolve, reject) => {
         try {
-          var result = eval(challenge.encode);
+          var result = eval(challenge);
           resolve(result);
         } catch (error) {
           resolve(null);

@@ -34,14 +34,9 @@ router.get('/f/p/orchestrate_chl_func', rateLimit, asyncHandler(async (req, res)
     setRedisChallenge(sessionKey, challenges)
   }
 
-  const challengesEncode = challenges.map(chl => {
-    return {
-      id: chl.id,
-      encode: chl.encode
-    }
-  });
+  const challengesJoin = challenges.map(x => x.encode).join('__');
 
-  res.status(200).send(challengesEncode);
+  res.status(200).send(challengesJoin);
 }));
 
 router.get('/f/p/orchestrate_chl_func_test', asyncHandler(async (req, res) => {
