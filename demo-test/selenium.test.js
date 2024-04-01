@@ -14,7 +14,7 @@ async function login() {
     try {
         await driver.get('https://alphafps.nexdev.net/');
 
-        await driver.executeScript('Object.defineProperty(navigator, "webdriver", { get: () => false });');
+        //await driver.executeScript('Object.defineProperty(navigator, "webdriver", { get: () => false });');
 
         await driver.findElement(By.id('txtUserName')).sendKeys('alele1');
         await driver.findElement(By.id('txtPassWord')).sendKeys('1234aa', Key.RETURN);

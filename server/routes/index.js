@@ -77,11 +77,7 @@ router.post('/f/p/orchestrate_chl/e', rateLimit, verifyTokenMiddleware, asyncHan
       ErrMsg: message
     }
   
-    await setAsync(`Challenge:${challengeId}`, JSON.stringify(challengeResult) , (err, reply) => {
-      if (err) {
-        captureException(err);
-      }
-    });
+    await setAsync(`Challenge:${challengeId}`, JSON.stringify(challengeResult));
 
     res.status(200).send();
   }else{
