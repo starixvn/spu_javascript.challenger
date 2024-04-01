@@ -10,11 +10,11 @@ module.exports = {
       exec: "!!window.__nightmare",
       expect: false,
     },
-    {
-      id: 3,
-      exec: "navigator.plugins.item(4294967296) === navigator.plugins[0]",
-      expect: true,
-    },
+    // {
+    //   id: 3,
+    //   exec: "navigator.plugins.item(4294967296) === navigator.plugins[0]",
+    //   expect: true,
+    // },
     {
       id: 4,
       exec: "navigator.webdriver",
