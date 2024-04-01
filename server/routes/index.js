@@ -18,7 +18,7 @@ const {
   handleChallengeVerification
 } = require('./handlers.js');
 
-router.get('/f/p/i/orchestrate_chl', rateLimit, asyncHandler(async (req, res) => {
+router.get('/f/p/i/orchestrate_chl/:ver?', rateLimit, asyncHandler(async (req, res) => {
   getScriptChallenge(req, res, false);
 }));
 
