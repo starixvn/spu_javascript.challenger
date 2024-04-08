@@ -26,8 +26,9 @@
       try {
         var challenge = eval(browserChallenges);
         var invalidBrowser = [];
-        for (var i = 0; i < JSON.parse(challenge).length; i++) {
-          var chlJson = JSON.parse(challenge)[i];
+        var parsedChallenge = JSON.parse(challenge);
+        for (var i = 0; i < parsedChallenge.length; i++) {
+          var chlJson = parsedChallenge[i];
           var result = eval(chlJson.exec);
           if (result !== chlJson.expect) {
             invalidBrowser.push(chlJson);
