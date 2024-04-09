@@ -11,14 +11,6 @@ import {
   
   const router = createBrowserRouter([
     {
-      path: "/",
-      element: (
-        <div>
-          <h1>Js Challenge</h1>
-        </div>
-      ),
-    },
-    {
       path: "/admin/jschallenge/settings",
       element: <App />,
     },
