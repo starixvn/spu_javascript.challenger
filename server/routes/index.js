@@ -4,7 +4,6 @@ const router = express.Router();
 const crypto = require('crypto');
 
 const { setAsync } = require('../components/redis.js');
-const { captureException } = require('../components/sentry.js');
 
 const { getChallenges } = require('../challenges/index.js');
 const { asyncHandler } = require('../middleware/errorHandlingMiddleware.js');
