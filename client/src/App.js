@@ -8,6 +8,7 @@ import './App.css';
 
 function App() {
   const isDev = process.env.NODE_ENV === "development";
+  console.log(process.env.NODE_ENV);
   const url = isDev ? 'http://localhost:3001' : '';
 
   const [inputData, setInputData] = useState({

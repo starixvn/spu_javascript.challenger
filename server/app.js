@@ -11,7 +11,7 @@ const router = require('./routes/index.js');
 const apiRoutes = require('./routes/api.js');
 
 const { NODE_ENV } = require('./config/index');
-const isProdEnv = NODE_ENV === 'production';
+const isProdEnv = NODE_ENV === 'PROD';
 
 const app = express();
 
