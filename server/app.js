@@ -10,9 +10,6 @@ const config =  require('./config/index.js');
 const router = require('./routes/index.js');
 const apiRoutes = require('./routes/api.js');
 
-const { NODE_ENV } = require('./config/index');
-const isProdEnv = NODE_ENV === 'PROD';
-
 const app = express();
 
 setAllCaches();
@@ -27,11 +24,9 @@ app.use(express.json());
 
 app.use("/", router);
 
-if(!isProdEnv){
-    app.use('/api', apiRoutes);
+app.use('/api', apiRoutes);
 
-    app.use(express.static(path.join(__dirname, config.NODE_ENV === 'development' ? "../client/build" : "/client/build")));
-}
+app.use(express.static(path.join(__dirname, config.NODE_ENV === 'development' ? "../client/build" : "/client/build")));
 
 app.use(errorHandler);
 
