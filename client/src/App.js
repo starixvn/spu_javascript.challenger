@@ -8,6 +8,8 @@ import './App.css';
 
 function App() {
   const isDev = process.env.NODE_ENV === "development";
+
+  console.log(process.env.NODE_ENV);
   const url = isDev ? 'http://localhost:3001' : '';
 
   const [inputData, setInputData] = useState({
@@ -42,7 +44,6 @@ function App() {
       setData(challenges);
     } catch (error) {
       console.log(error);
-      toast.error('Error fetch data', error);
     }
   };
 
@@ -51,7 +52,6 @@ function App() {
       const response = await axios.get(url + '/api/getSettingChallenges');
       setSettingChallenges(response.data);
     } catch (error) {
-      toast.error('Error fetch current challenge', error);
     }
   };
 

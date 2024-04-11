@@ -24,7 +24,9 @@ app.use(express.json());
 
 app.use("/", router);
 
-app.use('/api', apiRoutes);
+if(config.NODE_ENV.toLowerCase() !== 'prod'){
+    app.use('/api', apiRoutes);
+}
 
 app.use(express.static(path.join(__dirname, config.NODE_ENV === 'development' ? "../client/build" : "/client/build")));
 
