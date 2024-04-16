@@ -22,11 +22,7 @@ const verifyChallenge = async (challengeId, challengeResult, actual, isExternal)
     const {expect, timeExeChlServer, timeExeChlClient, challengeIds, parameters} = challengeResult;
   
     if (!isExternal) {
-        const rule1 = expect === actual;
-        const rule2 = timeExeChlServer < 2000; // milliseconds
-        const rule3 = timeExeChlClient < 2000; // milliseconds
-
-        const isBot = !(rule1 && rule2 && rule3);
+        const isBot = expect !== actual;
 
         const challengeResultFinal = {
             ChallengeIds: challengeIds,

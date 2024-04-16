@@ -62,6 +62,8 @@ async function handleChallengeVerification(req, res, isExternal) {
     return res.status(403).send();
   }
 
+  const timeServer = new Date().getTime();
+
   const challenge = await getAsync(`Challenge:${challengeId}`);
   const parseJson = JSON.parse(challenge);
 
@@ -78,7 +80,7 @@ async function handleChallengeVerification(req, res, isExternal) {
     parameters: Parameters,
     expect: Expected,
     actual: actual,
-    timeExeChlServer: new Date().getTime() - TimeChl,
+    timeExeChlServer: timeServer - TimeChl,
     timeExeChlClient: req.headers["res-aet-x"] - req.headers["res-bet-x"],
   };
 
