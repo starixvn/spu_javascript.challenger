@@ -1,0 +1,75 @@
+.App {
+  text-align: center;
+}
+
+p {
+  margin-top: 0;
+  margin-bottom: 1rem;
+}
+
+body {
+  background-color: rgb(255,255,255);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  font-size: calc(10px + 2vmin);
+  color: black;
+}
+
+.js-chl-setting{
+    position: relative;
+    padding: 20px 0;
+    display: inline-block;
+    width: calc(100% - 2px);
+    margin: 0 0 16px;
+    background-color: #ffffff;
+    border: 1px solid rgba(5, 5, 5, 0.06);
+    border-radius: 8px;
+    -webkit-transition: all 0.2s;
+    transition: all 0.2s;
+}
+
+.row-filter1{
+  width: 700px;
+  padding-bottom: 10px;
+}
+
+.row-filter2{
+  width: 700px;
+}
+
+.data-table{
+  border: 1px solid rgba(5, 5, 5, 0.06);
+  border-radius: 8px;
+}
+
+.editable-row .ant-form-item-explain {
+  position: absolute;
+  top: 100%;
+  font-size: 12px;
+}
+
+.ant-table-row .ant-table-cell:nth-child(2){
+  display: flex !important;
+}
+
+
+.ant-table-row .ant-table-cell:nth-child(2) .ant-form-item{
+  flex-grow:8 !important
+}
+
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}

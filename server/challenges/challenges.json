@@ -1,0 +1,84 @@
+[
+    {
+      "id": 1,
+      "func": "(function(x = type_n, y = type_n, width = type_n, height = type_n) { return `[x=${x}, y=${y}, width=${width}, height=${height}]`; })();"
+
+    },
+    {
+      "id": 2,
+      "func": "(function(arr = type_a) { if (arr?.length > 0) { return arr[0]; } else { return undefined; } })();"
+    },
+    {
+      "id": 3,
+      "func": "(function(a = type_s) { return 'something ' + a; })();"
+    },
+    {
+      "id": 4,
+      "func": "(function(num = type_n) { var numStr = num.toString(); var result = ''; for (var i = 0; i < numStr.length; i++) { var digit = parseInt(numStr[i]); result += (digit * digit).toString(); } return parseInt(result); })();"
+    },
+    {
+      "id": 5,
+      "func": "(function(a = type_s, b = type_s) { return a.length === b.length; })();"
+    },
+    {
+      "id": 6,
+      "func": "(function(obj = type_oj) { return Object.entries(obj).map(([key, value]) => [key, value]); })();"
+    },
+    {
+      "id": 7,
+      "func": "(function(x = type_n, y = type_n) { return x * Math.pow(2, y); })();"
+    },
+    {
+      "id": 8,
+      "func": "(function(arr = type_a) { arr.sort((a, b) => a - b); return [arr[0], arr[arr.length - 1]]; })();"
+    },
+    {
+      "id": 9,
+      "func": "(function(decimal = type_n) { if (decimal === 0) { return '0'; } var binaryString = ''; while (decimal > 0) { binaryString = (decimal % 2) + binaryString; decimal = Math.floor(decimal / 2); } return binaryString; })();"
+    },
+    {
+      "id": 10,
+      "func": "(function(num = type_n) { var numStr = num.toString(); var swappedNum = numStr[1] + numStr[0]; return num >= parseInt(swappedNum);})();"
+    },
+    {
+      "id": 11,
+      "func": "(function(hex = type_s) { return parseInt(hex, 16).toString(2); })();"
+    },
+    {
+      "id": 12,
+      "func": "(function(arr1 = type_a, arr2 = type_a) { return [arr1[0]].concat(arr2).concat([arr1[1]]); })();"
+    },
+    {
+      "id": 13,
+      "func": "(function(char = 'a', str = type_s) { var count = 0; for (var i = 0; i < str.length; i++) { if (str[i] === char) { count++; } } return count; })();"
+    },
+    {
+      "id": 14,
+      "func": "(function(num = type_n) { var half1, half2; if (num % 2 === 0) { half1 = half2 = num / 2; } else { half1 = Math.floor(num / 2); half2 = Math.ceil(num / 2); } return [half1, half2]; })()"
+    },
+    {
+      "id": 15,
+      "func": "(function(str = type_s) { var vowelRegex = /[aeiou]/gi; var matches = str.match(vowelRegex); return matches ? matches.length : 0; })()"
+    },
+    {
+      "id": 16,
+      "func": "(function(numbers = type_a) { var areaCode = numbers.slice(0, 3).join(''); var firstPart = numbers.slice(3, 6).join(''); var secondPart = numbers.slice(6).join(''); return '(' + areaCode + ') ' + firstPart + '-' + secondPart; })()"
+    },
+    {
+      "id": 17,
+      "func": "(function(str = type_s) { var result = ''; for (var i = 0; i < str.length; i++) { var charCode = str.charCodeAt(i); if (charCode % 2 === 0) { result += str[i].toUpperCase(); } else { result += str[i].toLowerCase(); } } return result; })()"
+    },
+    {
+      "id": 18,
+      "func": "(function(str = type_s) { var result = ''; for (var i = 0; i < str.length; i++) { var char = str[i]; if (char >= 'a' && char <= 'm' || char >= 'A' && char <= 'M') { result += '0'; } else if (char >= 'n' && char <= 'z' || char >= 'N' && char <= 'Z') { result += '1'; } else { result += char; } } return result; })()"
+    },
+    {
+      "id": 19,
+      "func": "(function(num = type_n) { var decimalIndex = num.toString().indexOf('.'); if (decimalIndex === -1) { return 0; } return num.toString().length - decimalIndex - 1; })()"
+    },
+    {
+      "id": 20,
+      "func": "(function(word = type_s) { var result = []; for (var i = 1; i <= word.length; i++) { result.push(word.slice(0, i)); } return result; })()"
+    }
+  ]
+  
