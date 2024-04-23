@@ -4,7 +4,7 @@ const cors = require('cors');
 
 const path = require('path');
 const { errorHandler } = require('./middleware/errorHandlingMiddleware.js');
-const { setAllCaches } = require('./components/startup.js');
+const { setAllCaches, setBuildScriptChallenge } = require('./components/startup.js');
 const config =  require('./config/index.js');
 
 const router = require('./routes/index.js');
@@ -13,6 +13,7 @@ const apiRoutes = require('./routes/api.js');
 const app = express();
 
 setAllCaches();
+setBuildScriptChallenge();
 
 app.enable('trust proxy');
 

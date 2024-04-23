@@ -7,20 +7,15 @@ const path = require('path');
 const { executeChallenges } = require("../challenges/index.js");
 const config = require('../config/index.js');
 const { verifyChallenge  } = require('../challenges/challengeFunc.js');
-const { getObfuscatedCode } = require('../components/jsObfuscator.js');
-const { BROWSER_CHALLENGES } = require('../constants/browserChallenge.js');
 const { NODE_ENV } = require('../config/index');
 const env = NODE_ENV === 'development' ? 'dev' : 'pro';
 
 async function getScriptChallenge(req, res, isExternal) {
   const rootUrl = `${req.protocol}://${req.get("host")}`;
-
-  const encode = getObfuscatedCode(JSON.stringify(BROWSER_CHALLENGES));
   const scriptContent = await fs.readFileSync(path.resolve(__dirname,`../script/${env}/challengeScript.js`), 'utf-8');
 
   const javascriptCode = scriptContent
     .replace(/_isExternal/g, isExternal)
-    .replace(/_browserChallenges/g, encode)
     .replace(/_rootUrl/g, rootUrl);
 
   res.setHeader("Content-Type", "application/javascript");
