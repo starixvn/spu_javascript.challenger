@@ -17,8 +17,8 @@ module.exports = {
     },
     {
       id: 4,
-      exec: "navigator.webdriver",
-      expect: false,
+      exec: "!navigator.webdriver",
+      expect: true,
     },
     {
       id: 5,
