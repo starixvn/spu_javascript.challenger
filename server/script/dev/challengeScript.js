@@ -1,4 +1,4 @@
-(function (isExternal = _isExternal, browserChallenges = '_browserChallenges', rootUrl = '_rootUrl') {
+(function (isExternal = _isExternal, browserChallenges = "_browserChallenges", rootUrl = '_rootUrl') {
   var ssk = "";
   var tokenElement = document.getElementById("__JvsVerificationToken");
   var token = tokenElement !== null ? tokenElement.value : null;
@@ -24,9 +24,8 @@
     function executeChallengeBrowser() {
       var isValid = true;
       try {
-        var challenge = eval(browserChallenges);
+        var parsedChallenge = eval(browserChallenges);
         var invalidBrowser = [];
-        var parsedChallenge = JSON.parse(challenge);
         for (var i = 0; i < parsedChallenge.length; i++) {
           var chlJson = parsedChallenge[i];
           var result = eval(chlJson.exec);
