@@ -21,18 +21,19 @@ const getAllChallenges = async () =>{
 const verifyChallenge = async (challengeId, challengeResult, actual, isExternal) =>{
     const {expect, timeExeChlServer, timeExeChlClient, challengeIds, parameters} = challengeResult;
     
-    const expectRoundNumber = isNumber(expect) ? expect.toFixed(2) : expect;
-    const actualRoundNumber = isNumber(actual) ? actual.toFixed(2) : actual;
+    const expectConvert = isNumber(expect) ? parseFloat(expect).toFixed(2).toString() : expect;
+    const actualConvert = isNumber(actual) ? parseFloat(actual).toFixed(2).toString() : actual;
 
-    const isBot = expectRoundNumber !== actualRoundNumber;
+
+    const isBot = expectConvert !== actualConvert;
 
     if (!isExternal) {
 
         const challengeResultFinal = {
             ChallengeIds: challengeIds,
             Parameters: parameters,
-            Expect: expectRoundNumber,
-            Actual: actualRoundNumber,
+            Expect: expectConvert,
+            Actual: actualConvert,
             ExeServerTimeInSecond: timeExeChlServer,
             ExeClientTimeInSecond: timeExeChlClient,
             Result: Number(isBot)
@@ -44,7 +45,7 @@ const verifyChallenge = async (challengeId, challengeResult, actual, isExternal)
     return isBot;
 }
 
-const isNumber = value => typeof value === 'number';
+const isNumber = value => !isNaN(value);
 
 
 module.exports = {

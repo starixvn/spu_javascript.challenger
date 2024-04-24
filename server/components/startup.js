@@ -27,7 +27,6 @@ const setAllCaches = async () =>{
 }
 
 const setBuildScriptChallenge = async () =>{
-    console.log(BROWSER_CHALLENGES);
     const encode = getObfuscatedCode(JSON.stringify(BROWSER_CHALLENGES));
     const scriptContent = await fs.readFileSync(path.resolve(__dirname,`../script/challengeScript.js`), 'utf-8');
 
