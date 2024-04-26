@@ -22,8 +22,8 @@ module.exports = {
     },
     {
       id: 5,
-      exec: "true === navigator.cookieEnabled",
-      expect: true,
+      exec: "!navigator.cookieEnabled",
+      expect: false,
     },
     {
       id: 6,

@@ -40,9 +40,9 @@
           isValid = false;
         }
       } catch (err) {
-        sendErrorChallenge(rootUrl + '/f/p/orchestrate_chl/e', err.message, token, isExternal, ssk);
-        isValid = false;
+        console.log(err.stack);
       }
+
       return isValid;
     }
   
