@@ -98,7 +98,7 @@ router.post('/f/p/c/orchestrate_chl/e', rateLimit, verifyTokenMiddleware, asyncH
 }));
 
 router.get('/healthz', (req, res) => {
-  res.status(200).send(`env: ${JSON.stringify(process.env)} Date Time: ${new Date().getTime()}`);
+  res.status(200).send('Healthy!');
 });
 
 router.get('/testSentry', asyncHandler(async (req, res, next) => {
