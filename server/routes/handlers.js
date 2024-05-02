@@ -33,7 +33,7 @@ async function setRedisChallenge(sessionKey, challenges) {
     TimeChl: new Date().getTime(),
   });
 
-  setAsync(`Challenge:${sessionKey}`, parseJson);
+  await setAsync(`Challenge:${sessionKey}`, parseJson);
 } 
 
 async function setRedisChallengeTest(sessionKey, challenges) {
@@ -62,7 +62,7 @@ async function handleChallengeVerification(req, res, isExternal) {
   const challenge = await getAsync(`Challenge:${challengeId}`);
   const parseJson = JSON.parse(challenge);
 
-  const { ChallengeIds, Parameters, Expected, TimeChl } = parseJson;
+  const { ChallengeIds, Parameters, Expected, TimeChl } = parseJson || {};
 
   if (!parseJson || !Expected) {
     return res.status(403).send();

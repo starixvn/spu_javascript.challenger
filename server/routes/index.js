@@ -30,7 +30,7 @@ router.get('/f/p/orchestrate_chl_func', rateLimit, asyncHandler(async (req, res)
   const challenges = getChallenges();
 
   if(sessionKey){
-    setRedisChallenge(sessionKey, challenges)
+    await setRedisChallenge(sessionKey, challenges)
   }
 
   const challengesJoin = challenges.map(x => x.encode).join('__');
