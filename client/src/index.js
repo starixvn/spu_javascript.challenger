@@ -5,6 +5,9 @@ import App from './App';
 import * as serviceWorker from './serviceWorker';
 
 const isProd = process.env.NODE_ENV === 'production';
+
+console.log(process.env.NODE_ENV);
+
 const component = isProd ? <div /> : <App />
 
 ReactDOM.render(component, document.getElementById('root'));
