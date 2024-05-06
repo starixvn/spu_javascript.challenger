@@ -7,20 +7,15 @@ const path = require('path');
 const { executeChallenges } = require("../challenges/index.js");
 const config = require('../config/index.js');
 const { verifyChallenge  } = require('../challenges/challengeFunc.js');
-const JSFuck = require('../components/jsfuck.js').JSFuck;
-const { BROWSER_CHALLENGES } = require('../constants/browserChallenge.js');
 const { NODE_ENV } = require('../config/index');
 const env = NODE_ENV === 'development' ? 'dev' : 'pro';
 
 async function getScriptChallenge(req, res, isExternal) {
   const rootUrl = `${req.protocol}://${req.get("host")}`;
-
-  const encode = JSFuck.encode(JSON.stringify(BROWSER_CHALLENGES));
   const scriptContent = await fs.readFileSync(path.resolve(__dirname,`../script/${env}/challengeScript.js`), 'utf-8');
 
   const javascriptCode = scriptContent
     .replace(/_isExternal/g, isExternal)
-    .replace(/_browserChallenges/g, encode)
     .replace(/_rootUrl/g, rootUrl);
 
   res.setHeader("Content-Type", "application/javascript");
@@ -38,7 +33,7 @@ async function setRedisChallenge(sessionKey, challenges) {
     TimeChl: new Date().getTime(),
   });
 
-  setAsync(`Challenge:${sessionKey}`, parseJson);
+  await setAsync(`Challenge:${sessionKey}`, parseJson);
 } 
 
 async function setRedisChallengeTest(sessionKey, challenges) {
@@ -67,7 +62,7 @@ async function handleChallengeVerification(req, res, isExternal) {
   const challenge = await getAsync(`Challenge:${challengeId}`);
   const parseJson = JSON.parse(challenge);
 
-  const { ChallengeIds, Parameters, Expected, TimeChl } = parseJson;
+  const { ChallengeIds, Parameters, Expected, TimeChl } = parseJson || {};
 
   if (!parseJson || !Expected) {
     return res.status(403).send();

@@ -30,7 +30,7 @@ router.get('/f/p/orchestrate_chl_func', rateLimit, asyncHandler(async (req, res)
   const challenges = getChallenges();
 
   if(sessionKey){
-    setRedisChallenge(sessionKey, challenges)
+    await setRedisChallenge(sessionKey, challenges)
   }
 
   const challengesJoin = challenges.map(x => x.encode).join('__');
@@ -98,7 +98,7 @@ router.post('/f/p/c/orchestrate_chl/e', rateLimit, verifyTokenMiddleware, asyncH
 }));
 
 router.get('/healthz', (req, res) => {
-  res.status(200).send(`env: ${JSON.stringify(process.env)} Date Time: ${new Date().getTime()}`);
+  res.status(200).send('Healthy!');
 });
 
 router.get('/testSentry', asyncHandler(async (req, res, next) => {

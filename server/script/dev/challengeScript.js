@@ -1,12 +1,12 @@
-(function (isExternal = _isExternal, browserChallenges = '_browserChallenges', rootUrl = '_rootUrl') {
+(function (isExternal = _isExternal, browserChallenges ="function a(){var j=['!!window.__nightmare','!(!window.callPhantom\x20&&\x20!window._phantom)','362019jUzZyL','127430GuRRdv','22729504ZrwLZA','1664568BSAXoM','608854gMzehR','navigator.plugins.length\x20>\x200\x20?\x20navigator.plugins.item(4294967296)\x20===\x20navigator.plugins[0]\x20:\x20navigator.plugins.length\x20==\x200','!navigator.appVersion','!(!window.domAutomation\x20&&\x20!window.domAutomationController)','!!(window.document.__selenium_unwrapped\x20||\x20window.document.__webdriver_evaluate)','!!window.emit','5153939beCgus','888234CFgDuV','!navigator.cookieEnabled','198zOMqaD'];a=function(){return j;};return a();}function b(c,d){var e=a();return b=function(f,g){f=f-0x93;var h=e[f];return h;},b(c,d);}var i=b;(function(c,d){var h=b,e=c();while(!![]){try{var f=-parseInt(h(0x96))/0x1+parseInt(h(0x9d))/0x2+-parseInt(h(0xa2))/0x3+-parseInt(h(0x95))/0x4+parseInt(h(0x93))/0x5*(-parseInt(h(0x9f))/0x6)+-parseInt(h(0x9c))/0x7+parseInt(h(0x94))/0x8;if(f===d)break;else e['push'](e['shift']());}catch(g){e['push'](e['shift']());}}}(a,0x89491),[{'id':0x1,'exec':i(0x9b),'expect':![]},{'id':0x2,'exec':i(0xa0),'expect':![]},{'id':0x3,'exec':i(0x97),'expect':!![]},{'id':0x4,'exec':'!navigator.webdriver','expect':!![]},{'id':0x5,'exec':i(0x9e),'expect':![]},{'id':0x6,'exec':i(0xa1),'expect':![]},{'id':0x7,'exec':i(0x9a),'expect':![]},{'id':0x8,'exec':i(0x99),'expect':![]},{'id':0x9,'exec':i(0x98),'expect':![]}]);", rootUrl = '_rootUrl') {
   var ssk = "";
   var tokenElement = document.getElementById("__JvsVerificationToken");
-  var token = tokenElement !== null ? tokenElement.value : null;
+  var token = tokenElement != null ? tokenElement.value : null;
 
   try{
     if (!isExternal) {
       var sessionKey = document.getElementById("__fdi").value;
-      if (sessionKey !== undefined && sessionKey.length > 0) {
+      if (sessionKey != undefined && sessionKey.length > 0) {
         ssk = sessionKey.split(':')[0];
       }
     } else {
@@ -24,24 +24,25 @@
     function executeChallengeBrowser() {
       var isValid = true;
       try {
-        var challenge = eval(browserChallenges);
         var invalidBrowser = [];
-        var parsedChallenge = JSON.parse(challenge);
-        for (var i = 0; i < parsedChallenge.length; i++) {
-          var chlJson = parsedChallenge[i];
+        var challengesParse = eval(browserChallenges);
+
+        for (var i = 0; i < challengesParse.length; i++) {
+          var chlJson = challengesParse[i];
           var result = eval(chlJson.exec);
-          if (result !== chlJson.expect) {
+          if (result != chlJson.expect) {
             invalidBrowser.push(chlJson);
           }
         }
+        
         if (invalidBrowser.length > 0) {
           sendErrorChallenge(rootUrl + '/f/p/orchestrate_chl/e', invalidBrowser.map(function (x) { return x.id; }).join(','), token, isExternal, ssk);
           isValid = false;
         }
       } catch (err) {
-        sendErrorChallenge(rootUrl + '/f/p/orchestrate_chl/e', err.message, token, isExternal, ssk);
-        isValid = false;
+        console.log(err.stack);
       }
+
       return isValid;
     }
   
@@ -149,7 +150,7 @@
       var xhr = new XMLHttpRequest();
       xhr.open(method, url, true);
       xhr.onreadystatechange = function () {
-        if (xhr.readyState === 4) {
+        if (xhr.readyState == 4) {
           if (xhr.status >= 200 && xhr.status < 300) {
             resolve(xhr.responseText);
           } else {
