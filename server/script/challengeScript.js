@@ -5,9 +5,9 @@
 
   try{
     if (!isExternal) {
-      var sessionKey = document.getElementById("__fdi").value;
-      if (sessionKey != undefined && sessionKey.length > 0) {
-        ssk = sessionKey.split(':')[0];
+      var sessionKey = document.getElementById("__jsc");
+      if (sessionKey) {
+        ssk = sessionKey.value;
       }
     } else {
       ssk = uuid();
